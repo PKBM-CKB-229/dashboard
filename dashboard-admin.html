@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Pengawas Utama PKBM</title>
+    <title>Pengawas Utama - PKBM CKB</title>
     <link rel="icon" type="image/png" href="img-logo-pkbm.png">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -121,36 +121,23 @@
                 </div>
             </div>
 
-            <div id="panel-jurnal-guru" class="menu-panel hidden space-y-6">
-                <div class="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
-                    <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-sm">Log Jurnal & Aktivitas Mengajar Guru</h3>
-                            <p class="text-[11px] text-slate-400 font-medium mt-0.5">Audit materi pembelajaran dan ketepatan jam kelas</p>
-                        </div>
-                        <button onclick="muatJurnalGuru()" class="inline-flex items-center gap-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer shadow-xs">
-                            <i class="fa-solid fa-rotate text-[10px]"></i> Refresh Jurnal
-                        </button>
+            <div id="panel-jurnal-guru" class="menu-panel hidden space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-sm">Log Jurnal & Aktivitas Mengajar Guru</h3>
+                        <p class="text-[11px] text-slate-400 font-medium mt-0.5">Audit materi pembelajaran, jam KBM, dan dokumentasi per guru / mata pelajaran / kelas</p>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 border-b border-slate-100 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
-                                    <th class="px-6 py-3">Tanggal</th>
-                                    <th class="px-6 py-3">Nama Guru</th>
-                                    <th class="px-6 py-3">Mata Pelajaran (Kelas)</th>
-                                    <th class="px-6 py-3">Pembahasan Materi / Modul</th>
-                                    <th class="px-6 py-3 text-center">Jam Buka - Kunci</th>
-                                    <th class="px-6 py-3">Catatan / Keterangan</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelJurnalGuruBody" class="text-sm divide-y divide-slate-100"></tbody>
-                        </table>
+                </div>
+                <div id="containerJurnalPerGuru">
+                    <div class="text-center py-12 text-slate-400 font-medium bg-white border border-slate-100 rounded-2xl">
+                        <i class="fa-solid fa-spinner animate-spin text-emerald-500 text-2xl mb-2"></i>
+                        <p class="text-xs">Memuat jurnal guru...</p>
                     </div>
                 </div>
             </div>
 
-            <div id="panel-input-jadwal" class="menu-panel hidden max-w-xl">
+            <div id="panel-input-jadwal" class="menu-panel hidden max-w-4xl">
+                <div class="grid md:grid-cols-2 gap-6 items-start">
                 <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-xs space-y-5">
                     <div class="border-b border-slate-100 pb-4">
                         <h3 class="font-bold text-slate-900 text-base">Atur Plotting Jadwal Pelajaran</h3>
@@ -199,6 +186,66 @@
                             </button>
                         </div>
                     </form>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-xs space-y-5">
+                    <div class="border-b border-slate-100 pb-4">
+                        <h3 class="font-bold text-slate-900 text-base">Cetak Jadwal Pelajaran</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Pilih mode cetak, lalu pilih nama guru atau kelas untuk membuat dokumen resmi siap cetak.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Mode Cetak</label>
+                        <div class="flex gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-100">
+                            <button type="button" id="btnModeGuru" onclick="pilihModeCetakJadwal('guru')" class="flex-1 text-xs font-bold py-2 rounded-lg transition cursor-pointer bg-white text-emerald-700 shadow-xs">
+                                <i class="fa-solid fa-chalkboard-user mr-1"></i> Per Guru
+                            </button>
+                            <button type="button" id="btnModeKelas" onclick="pilihModeCetakJadwal('kelas')" class="flex-1 text-xs font-bold py-2 rounded-lg transition cursor-pointer text-slate-500">
+                                <i class="fa-solid fa-users-rectangle mr-1"></i> Per Kelas
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="wrapperPilihGuruCetak">
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Pilih Nama Guru</label>
+                        <select id="pilihGuruCetak" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:outline-none bg-white font-medium text-slate-700 transition">
+                            <option value="">Memuat data guru...</option>
+                        </select>
+                    </div>
+
+                    <div id="wrapperPilihKelasCetak" class="hidden">
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Pilih Kelas</label>
+                        <select id="pilihKelasCetak" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:outline-none bg-white font-medium text-slate-700 transition">
+                            <option value="">Memuat data kelas...</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="button" onclick="bukaCetakJadwal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 px-4 rounded-xl transition shadow-xs cursor-pointer text-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-print text-xs"></i> Cetak Jadwal
+                        </button>
+                    </div>
+
+                    <div id="tabelPreviewJadwalWrap" class="pt-3 border-t border-slate-100">
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pratinjau Data Jadwal</p>
+                        <div class="max-h-64 overflow-y-auto rounded-xl border border-slate-100">
+                            <table class="w-full text-xs">
+                                <thead class="bg-slate-50 sticky top-0">
+                                    <tr class="text-slate-500 text-left">
+                                        <th class="px-3 py-2 font-bold">Hari</th>
+                                        <th class="px-3 py-2 font-bold">Waktu</th>
+                                        <th class="px-3 py-2 font-bold">Kelas</th>
+                                        <th class="px-3 py-2 font-bold">Mapel</th>
+                                        <th class="px-3 py-2 font-bold">Guru</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelPreviewJadwalBody" class="divide-y divide-slate-100 text-slate-600">
+                                    <tr><td colspan="5" class="text-center py-6 text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Memuat...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
 
@@ -283,8 +330,59 @@
     <!-- JAVASCRIPT: Logika Fungsi Tetap Utuh, Hanya Modifikasi Visual Kelas Aktif -->
 <script>
     // URL Aplikasi Web Google Apps Script Anda
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwMMkeWbxGPKeroIHlhsZ636OB5htdvNsSi98A0iz8Nxw4rCNjDkwz-1l9A1muZNTH7cg/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx6SQNHYf8s3evnvDJfIlbmE5DKIH4_k2r3dGmWqpMQBx5AsudRsq8qLqdMzBLyb0mQ8A/exec";
     let userLogin = null;
+
+    // 🔔 FUNGSI NOTIFIKASI TOAST (dipanggil di banyak tempat, sebelumnya belum didefinisikan)
+    function tampilkanNotifikasi(pesan, tipe = "info") {
+        let kontainer = document.getElementById('toastKontainer');
+        if (!kontainer) {
+            kontainer = document.createElement('div');
+            kontainer.id = 'toastKontainer';
+            kontainer.style.position = 'fixed';
+            kontainer.style.top = '16px';
+            kontainer.style.right = '16px';
+            kontainer.style.zIndex = '99999';
+            kontainer.style.display = 'flex';
+            kontainer.style.flexDirection = 'column';
+            kontainer.style.gap = '8px';
+            document.body.appendChild(kontainer);
+        }
+
+        const warna = {
+            success: { bg: '#ecfdf5', border: '#10b981', text: '#065f46', icon: 'fa-circle-check' },
+            error:   { bg: '#fff1f2', border: '#f43f5e', text: '#9f1239', icon: 'fa-circle-exclamation' },
+            info:    { bg: '#eff6ff', border: '#3b82f6', text: '#1e3a8a', icon: 'fa-circle-info' }
+        }[tipe] || { bg: '#eff6ff', border: '#3b82f6', text: '#1e3a8a', icon: 'fa-circle-info' };
+
+        const toast = document.createElement('div');
+        toast.style.background = warna.bg;
+        toast.style.border = `1px solid ${warna.border}`;
+        toast.style.color = warna.text;
+        toast.style.padding = '10px 14px';
+        toast.style.borderRadius = '10px';
+        toast.style.fontSize = '12px';
+        toast.style.fontWeight = '600';
+        toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
+        toast.style.minWidth = '240px';
+        toast.style.maxWidth = '340px';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(20px)';
+        toast.style.transition = 'all 0.25s ease';
+        toast.innerHTML = `<i class="fa-solid ${warna.icon}" style="margin-right:8px;"></i>${pesan}`;
+
+        kontainer.appendChild(toast);
+        requestAnimationFrame(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(0)';
+        });
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(20px)';
+            setTimeout(() => toast.remove(), 250);
+        }, 4000);
+    }
 
     // 1. CEK OTENTIKASI & LOGIN SAAT HALAMAN DIMUAT
     window.onload = function() {
@@ -335,6 +433,7 @@
                 muatJurnalGuru();
             } else if (targetPanel === 'input-jadwal') {
                 judulHalamanEl.innerText = "Manajemen Jadwal Pelajaran Harian";
+                muatDataJadwalAdmin();
             } else if (targetPanel === 'input-ujian') {
                 judulHalamanEl.innerText = "Terbitkan Jadwal Ujian Resmi";
             } else if (targetPanel === 'keringanan') {
@@ -378,8 +477,214 @@
         }
     }
 
+    // ===================================================================
+    // 🗓️ FITUR CETAK JADWAL PELAJARAN (Per Guru / Per Kelas)
+    // ===================================================================
+    var cacheJadwalAdmin = [];
+    var modeCetakJadwalAktif = 'guru'; // 'guru' atau 'kelas'
+    const URUTAN_HARI = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+
+    async function muatDataJadwalAdmin() {
+        const selGuru = document.getElementById('pilihGuruCetak');
+        const selKelas = document.getElementById('pilihKelasCetak');
+        const previewBody = document.getElementById('tabelPreviewJadwalBody');
+
+        try {
+            const respon = await fetch(WEB_APP_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'getSemuaJadwalAdmin' })
+            });
+            const hasil = await respon.json();
+
+            if (hasil.status !== 'success') {
+                if (previewBody) previewBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-rose-500 font-semibold">Gagal memuat: ${hasil.message || 'Terjadi kesalahan'}</td></tr>`;
+                tampilkanNotifikasi("Gagal mengambil data jadwal: " + (hasil.message || ""), "error");
+                return;
+            }
+
+            cacheJadwalAdmin = Array.isArray(hasil.data) ? hasil.data : [];
+
+            // Isi dropdown Nama Guru (unik)
+            const daftarGuru = [...new Set(cacheJadwalAdmin.map(j => j.nama_guru).filter(Boolean))].sort();
+            if (selGuru) {
+                selGuru.innerHTML = daftarGuru.length
+                    ? daftarGuru.map(g => `<option value="${g}">${g}</option>`).join('')
+                    : `<option value="">Belum ada data guru</option>`;
+            }
+
+            // Isi dropdown Kelas (unik)
+            const daftarKelas = [...new Set(cacheJadwalAdmin.map(j => j.kelas).filter(Boolean))].sort();
+            if (selKelas) {
+                selKelas.innerHTML = daftarKelas.length
+                    ? daftarKelas.map(k => `<option value="${k}">${k}</option>`).join('')
+                    : `<option value="">Belum ada data kelas</option>`;
+            }
+
+            renderPreviewJadwalAdmin();
+        } catch (error) {
+            console.error("Kesalahan jaringan (jadwal):", error);
+            if (previewBody) previewBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-rose-500 font-semibold">Gagal memuat data dari server.</td></tr>`;
+            tampilkanNotifikasi("Terjadi kesalahan koneksi database.", "error");
+        }
+    }
+
+    function renderPreviewJadwalAdmin() {
+        const previewBody = document.getElementById('tabelPreviewJadwalBody');
+        if (!previewBody) return;
+
+        if (cacheJadwalAdmin.length === 0) {
+            previewBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400 italic">Belum ada jadwal yang didaftarkan.</td></tr>`;
+            return;
+        }
+
+        const sorted = [...cacheJadwalAdmin].sort((a, b) => {
+            const iA = URUTAN_HARI.indexOf(a.hari), iB = URUTAN_HARI.indexOf(b.hari);
+            if (iA !== iB) return iA - iB;
+            return bersihkanJam(a.jam_mulai, '00:00').localeCompare(bersihkanJam(b.jam_mulai, '00:00'));
+        });
+
+        previewBody.innerHTML = sorted.map(j => `
+            <tr>
+                <td class="px-3 py-2 font-semibold">${j.hari || '-'}</td>
+                <td class="px-3 py-2">${bersihkanJam(j.jam_mulai, '-')} - ${bersihkanJam(j.jam_selesai, '-')}</td>
+                <td class="px-3 py-2">${j.kelas || '-'}</td>
+                <td class="px-3 py-2">${j.mata_pelajaran || '-'}</td>
+                <td class="px-3 py-2">${j.nama_guru || '-'}</td>
+            </tr>
+        `).join('');
+    }
+
+    function pilihModeCetakJadwal(mode) {
+        modeCetakJadwalAktif = mode;
+        const btnGuru = document.getElementById('btnModeGuru');
+        const btnKelas = document.getElementById('btnModeKelas');
+        const wrapGuru = document.getElementById('wrapperPilihGuruCetak');
+        const wrapKelas = document.getElementById('wrapperPilihKelasCetak');
+
+        if (mode === 'guru') {
+            btnGuru.classList.add('bg-white', 'text-emerald-700', 'shadow-xs');
+            btnGuru.classList.remove('text-slate-500');
+            btnKelas.classList.remove('bg-white', 'text-emerald-700', 'shadow-xs');
+            btnKelas.classList.add('text-slate-500');
+            wrapGuru.classList.remove('hidden');
+            wrapKelas.classList.add('hidden');
+        } else {
+            btnKelas.classList.add('bg-white', 'text-emerald-700', 'shadow-xs');
+            btnKelas.classList.remove('text-slate-500');
+            btnGuru.classList.remove('bg-white', 'text-emerald-700', 'shadow-xs');
+            btnGuru.classList.add('text-slate-500');
+            wrapKelas.classList.remove('hidden');
+            wrapGuru.classList.add('hidden');
+        }
+    }
+
+    function bukaCetakJadwal() {
+        if (cacheJadwalAdmin.length === 0) {
+            tampilkanNotifikasi("Data jadwal belum siap, silakan tunggu sebentar.", "info");
+            return;
+        }
+
+        let nilaiFilter = '';
+        let dataTercetak = [];
+        let judulDokumen = '';
+        let subInfoDokumen = '';
+        let kolomHTML = '';
+        let bodyHTML = '';
+
+        if (modeCetakJadwalAktif === 'guru') {
+            nilaiFilter = document.getElementById('pilihGuruCetak').value;
+            if (!nilaiFilter) { tampilkanNotifikasi("Pilih nama guru terlebih dahulu.", "info"); return; }
+            dataTercetak = cacheJadwalAdmin.filter(j => j.nama_guru === nilaiFilter);
+            judulDokumen = "JADWAL MENGAJAR GURU";
+            subInfoDokumen = `Nama Guru: ${nilaiFilter}`;
+            kolomHTML = `
+                <th class="border border-black p-2 bg-red-600 text-white">Hari</th>
+                <th class="border border-black p-2 bg-red-600 text-white">Waktu</th>
+                <th class="border border-black p-2 bg-red-600 text-white">Kelas</th>
+                <th class="border border-black p-2 bg-red-600 text-white">Mata Pelajaran</th>`;
+        } else {
+            nilaiFilter = document.getElementById('pilihKelasCetak').value;
+            if (!nilaiFilter) { tampilkanNotifikasi("Pilih kelas terlebih dahulu.", "info"); return; }
+            dataTercetak = cacheJadwalAdmin.filter(j => j.kelas === nilaiFilter);
+            judulDokumen = "JADWAL PELAJARAN";
+            subInfoDokumen = `Kelas: ${nilaiFilter}`;
+            kolomHTML = `
+                <th class="border border-black p-2 bg-red-600 text-white">Hari</th>
+                <th class="border border-black p-2 bg-red-600 text-white">Waktu</th>
+                <th class="border border-black p-2 bg-red-600 text-white">Mata Pelajaran</th>
+                <th class="border border-black p-2 bg-red-600 text-white">Nama Guru</th>`;
+        }
+
+        if (dataTercetak.length === 0) {
+            tampilkanNotifikasi("Tidak ada jadwal untuk pilihan ini.", "info");
+            return;
+        }
+
+        dataTercetak.sort((a, b) => {
+            const iA = URUTAN_HARI.indexOf(a.hari), iB = URUTAN_HARI.indexOf(b.hari);
+            if (iA !== iB) return iA - iB;
+            return bersihkanJam(a.jam_mulai, '00:00').localeCompare(bersihkanJam(b.jam_mulai, '00:00'));
+        });
+
+        // Kelompokkan baris per Hari, dengan rowspan (mengikuti gaya tabel di dokumen resmi PKBM)
+        const grup = {};
+        dataTercetak.forEach(j => {
+            if (!grup[j.hari]) grup[j.hari] = [];
+            grup[j.hari].push(j);
+        });
+
+        Object.keys(grup).sort((a, b) => URUTAN_HARI.indexOf(a) - URUTAN_HARI.indexOf(b)).forEach(hari => {
+            const baris = grup[hari];
+            baris.forEach((j, idx) => {
+                bodyHTML += `<tr>`;
+                if (idx === 0) {
+                    bodyHTML += `<td class="border border-black p-2 text-center font-semibold align-middle" rowspan="${baris.length}">${hari}</td>`;
+                }
+                bodyHTML += `<td class="border border-black p-2 text-center">${bersihkanJam(j.jam_mulai, '-')} - ${bersihkanJam(j.jam_selesai, '-')}</td>`;
+                if (modeCetakJadwalAktif === 'guru') {
+                    bodyHTML += `<td class="border border-black p-2 text-center">${j.kelas || '-'}</td>`;
+                    bodyHTML += `<td class="border border-black p-2">${j.mata_pelajaran || '-'}</td>`;
+                } else {
+                    bodyHTML += `<td class="border border-black p-2">${j.mata_pelajaran || '-'}</td>`;
+                    bodyHTML += `<td class="border border-black p-2">${j.nama_guru || '-'}</td>`;
+                }
+                bodyHTML += `</tr>`;
+            });
+        });
+
+        document.getElementById('judulCetakJadwal').innerText = judulDokumen;
+        document.getElementById('subInfoCetakJadwal').innerText = subInfoDokumen;
+        document.getElementById('headerTabelCetakJadwal').innerHTML = kolomHTML;
+        document.getElementById('bodyTabelCetakJadwal').innerHTML = bodyHTML;
+
+        const namaBulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        const now = new Date();
+        document.getElementById('tanggalCetakJadwal').innerText = `Lembang, ${namaBulanIndo[now.getMonth()]} ${now.getFullYear()}`;
+
+        document.getElementById('modalCetakJadwal').classList.remove('hidden');
+        document.body.classList.add('mode-cetak-jadwal');
+    }
+
+    function tutupCetakJadwal() {
+        document.getElementById('modalCetakJadwal').classList.add('hidden');
+        document.body.classList.remove('mode-cetak-jadwal');
+    }
+
+    // 🕒 FUNGSI BANTU: Membersihkan nilai jam mentah dari Google Sheets.
+    // Kolom bertipe "Time" di Google Sheets selalu diserialisasi sebagai tanggal dummy 1899-12-30,
+    // jadi nilainya perlu diekstrak jadi format "HH:mm" sebelum ditampilkan.
+    function bersihkanJam(rawJam, fallback = '-') {
+        if (!rawJam) return fallback;
+        const str = String(rawJam);
+        if (str.includes('1899-')) {
+            const m = str.match(/T(\d{2}):(\d{2})/);
+            return m ? `${m[1]}:${m[2]}` : fallback;
+        }
+        return str; // Sudah dalam format bersih (mis. "08:00")
+    }
+
     // 3. FUNGSI AMBIL DATA REKAP ABSENSI SISWA
-    async function muatRekapAbsen() {
+   async function muatRekapAbsen(kelasDipilih = "") { // ➕ TAMBAHKAN parameter kelasDipilih (default kosong "")
         const tbody = document.getElementById('tabelRekapBody');
         if (!tbody) return;
         
@@ -389,7 +694,10 @@
             const response = await fetch(WEB_APP_URL, { 
                 method: 'POST', 
                 headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ action: 'getRekapAdmin' }) 
+                body: JSON.stringify({ 
+                    action: 'getRekapAdmin',
+                    kelas: kelasDipilih // 👈 CHIP UTAMA: Sekarang data filter kelas ikut terkirim ke Google Apps Script
+                }) 
             });
             const result = await response.json();
             
@@ -410,9 +718,13 @@
                             <td class="px-6 py-3.5 font-mono text-xs font-semibold text-slate-400">${siswa.id || '-'}</td>
                             <td class="px-6 py-3.5 font-semibold text-slate-800">${siswa.nama || '-'}</td>
                             <td class="px-6 py-3.5 font-medium text-slate-500">${siswa.kelas || '-'}</td>
-                            <td class="px-6 py-3.5 text-center font-bold text-emerald-600 bg-emerald-50/20">${siswa.hadir || 0}</td>
+                            
+                            <td class="px-6 py-3.5 text-center font-bold text-emerald-600 bg-emerald-50/20">
+                                ${siswa.hadir || 0} <span class="text-xs text-slate-400 font-normal">/ ${siswa.total_pertemuan || 0}</span>
+                            </td>
+                            
                             <td class="px-6 py-3.5 text-center font-bold text-rose-600 bg-rose-50/20">${siswa.alfa || 0}</td>
-                            <td class="px-6 py-3.5 text-center"><span class="px-2.5 py-0.5 text-xs font-bold border rounded-full ${badgeWarna}">${nilaiPersen}%</span></td>
+                            <td class="px-6 py-3.5 text-center"><span class="px-2.5 py-0.5 text-xs font-bold border rounded-full ${badgeWarna}">${siswa.persen}</span></td>
                         </tr>`;
                 });
             } else {
@@ -428,54 +740,60 @@
     // 🧠 GLOBAL STORAGE UNTUK MEMBANTU PROSES FILTERING AKTIF
     var cacheJurnalGuruAdmin = [];
 
-    // 6. MONITOR JURNAL AGENDA MENGAJAR GURU (VERSI GRUP GURU + FILTER MAPEL & KELAS)
+   // 🔄 REPARASI FUNGSI MEMANGGIL DATA AGAR TIDAK MACET LOADING
     async function muatJurnalGuru() {
-        const tbody = document.getElementById('tabelJurnalGuruBody');
-        if (!tbody) return;
-        
-        const tableContainer = tbody.closest('.overflow-x-auto');
-        let groupContainer = document.getElementById('containerJurnalPerGuru');
-        if (!groupContainer) {
-            groupContainer = document.createElement('div');
-            groupContainer.id = 'containerJurnalPerGuru';
-            groupContainer.className = 'p-6 grid grid-cols-1 gap-8 bg-white';
-            tableContainer.parentNode.insertBefore(groupContainer, tableContainer);
+        const container = document.getElementById('containerJurnalPerGuru');
+        if (container) {
+            container.innerHTML = `
+                <div class="text-center py-12 text-slate-400 font-medium">
+                    <i class="fa-solid fa-spinner animate-spin text-emerald-500 text-2xl mb-2"></i>
+                    <p class="text-xs">Mengompilasi tabel agenda mengajar guru...</p>
+                </div>`;
         }
-        
-        tableContainer.style.display = 'none';
-        groupContainer.innerHTML = `<div class="text-center py-12 text-slate-400 font-medium"><i class="fa-solid fa-spinner fa-spin mr-2 text-emerald-500"></i>Mengompilasi tabel agenda mengajar guru...</div>`;
-        
+
         try {
-            const response = await fetch(WEB_APP_URL, { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ action: 'getJurnalGuruAdmin' }) 
+            const respon = await fetch(WEB_APP_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'getJurnalGuruAdmin' })
             });
-            const result = await response.json();
-            
-            if (result.status === "success") {
-                cacheJurnalGuruAdmin = result.data || []; // Simpan ke dalam cache global browser
-                renderTabelGrupGuru(); // Panggil fungsi render utama
+            const hasil = await respon.json();
+
+            if (hasil.status === 'success') {
+                // Pastikan hasil data berbentuk Array, jika bukan buat menjadi array kosong []
+                cacheJurnalGuruAdmin = Array.isArray(hasil.data) ? hasil.data : [];
+                renderTabelGrupGuru();
             } else {
-                groupContainer.innerHTML = `<div class="text-center text-rose-500 py-6 font-semibold"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>Gagal: ${result.message}</div>`;
+                cacheJurnalGuruAdmin = [];
+                renderTabelGrupGuru();
+                tampilkanNotifikasi("Gagal mengambil data: " + hasil.message, "error");
             }
-        } catch (e) { 
-            groupContainer.innerHTML = `<div class="text-center text-rose-500 py-6 font-semibold"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>Gagal memuat data kelompok mengajar guru.</div>`; 
+        } catch (error) {
+            console.error("Kesalahan jaringan:", error);
+            cacheJurnalGuruAdmin = [];
+            // Jika gagal, langsung tampilkan container kosong agar tidak stuck loading abu-abu
+            if (container) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-rose-500 font-semibold bg-white border border-slate-100 rounded-2xl">
+                        <i class="fa-solid fa-circle-exclamation text-2xl mb-2"></i>
+                        <p class="text-xs">Gagal memuat data dari server. Silakan klik refresh kembali.</p>
+                        <button onclick="muatJurnalGuru()" class="mt-3 text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 transition font-bold cursor-pointer">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> Coba Lagi
+                        </button>
+                    </div>`;
+            }
+            tampilkanNotifikasi("Terjadi kesalahan koneksi database.", "error");
         }
     }
 
-    // 🛠️ FUNGSI UTAMA UNTUK MERENDER DATA BERDASARKAN FILTER YANG DIPILIH (FIXED CRUD BINDING)
+    // 🛠️ 1. FUNGSI UTAMA UNTUK MERENDER DATA BERDASARKAN FILTER YANG DIPILIH
     function renderTabelGrupGuru() {
         const groupContainer = document.getElementById('containerJurnalPerGuru');
         if (!groupContainer || cacheJurnalGuruAdmin.length === 0) return;
 
-        // Ambil nilai filter global
         const filterMapelGlobal = document.getElementById('filterMapelGlobal')?.value || 'SEMUA';
         const filterKelasGlobal = document.getElementById('filterKelasGlobal')?.value || 'SEMUA';
 
-        // Kelompokkan data yang lolos filter
         const jurnalPerGuru = {};
-        
         const setMapel = new Set();
         const setKelas = new Set();
 
@@ -483,7 +801,6 @@
             if (jurnal.mata_pelajaran) setMapel.add(jurnal.mata_pelajaran);
             if (jurnal.kelas) setKelas.add(jurnal.kelas);
 
-            // Filter logika pencarian
             if (filterMapelGlobal !== 'SEMUA' && jurnal.mata_pelajaran !== filterMapelGlobal) return;
             if (filterKelasGlobal !== 'SEMUA' && jurnal.kelas !== filterKelasGlobal) return;
 
@@ -491,147 +808,194 @@
             if (!jurnalPerGuru[namaGuru]) {
                 jurnalPerGuru[namaGuru] = [];
             }
-            // Simpan index dan ID asli dari database agar aksi CRUD tidak kehilangan referensi baris
-            jurnal.indexAsli = index; 
+            jurnal.indexAsli = index;
             jurnalPerGuru[namaGuru].push(jurnal);
         });
 
-        // Generate Toolbar Filter
         let toolbarHTML = `
-            <div class="flex flex-wrap items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200/60 mb-2 d-print-none text-xs font-semibold text-slate-700">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-filter text-emerald-600"></i>
-                    <span>Saring Matpel:</span>
-                    <select id="filterMapelGlobal" onchange="renderTabelGrupGuru()" class="bg-white border border-slate-200 rounded-md px-2 py-1 focus:outline-emerald-500 font-medium text-slate-600">
-                        <option value="SEMUA" ${filterMapelGlobal === 'SEMUA' ? 'selected' : ''}>-- Semua Mata Pelajaran --</option>
-                        ${Array.from(setMapel).map(m => `<option value="${m}" ${filterMapelGlobal === m ? 'selected' : ''}>${m}</option>`).join('')}
-                    </select>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span>Saring Kelas:</span>
-                    <select id="filterKelasGlobal" onchange="renderTabelGrupGuru()" class="bg-white border border-slate-200 rounded-md px-2 py-1 focus:outline-emerald-500 font-medium text-slate-600">
-                        <option value="SEMUA" ${filterKelasGlobal === 'SEMUA' ? 'selected' : ''}>-- Semua Kelas --</option>
-                        ${Array.from(setKelas).map(k => `<option value="${k}" ${filterKelasGlobal === k ? 'selected' : ''}>Kelas ${k}</option>`).join('')}
-                    </select>
-                </div>
-                <button onclick="muatJurnalGuru()" class="ml-auto flex items-center gap-1 px-2.5 py-1 text-emerald-700 bg-emerald-100/80 hover:bg-emerald-100 rounded-md transition-colors cursor-pointer">
-                    <i class="fa-solid fa-rotate"></i> Refresh
-                </button>
+        <div class="flex flex-wrap items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200/60 mb-2 d-print-none text-xs font-semibold text-slate-700">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-filter text-emerald-600"></i>
+                <span>Saring Matpel:</span>
+                <select id="filterMapelGlobal" onchange="renderTabelGrupGuru()" class="bg-white border border-slate-200 rounded-md px-2 py-1 focus:outline-emerald-500 font-medium text-slate-600">
+                    <option value="SEMUA" ${filterMapelGlobal === 'SEMUA' ? 'selected' : ''}>-- Semua Mata Pelajaran --</option>
+                    ${Array.from(setMapel).map(m => `<option value="${m}" ${filterMapelGlobal === m ? 'selected' : ''}>${m}</option>`).join('')}
+                </select>
             </div>
-        `;
-
-        groupContainer.innerHTML = toolbarHTML;
-
-        if (Object.keys(jurnalPerGuru).length === 0) {
-            groupContainer.innerHTML += `<div class="text-center py-12 text-slate-400 italic">Tidak ada agenda mengajar yang cocok dengan filter terpilih.</div>`;
-            return;
-        }
-
-        // Render struktur Card per Guru
-        Object.keys(jurnalPerGuru).forEach(namaGuru => {
-            const daftarAgenda = jurnalPerGuru[namaGuru];
+            <div class="flex items-center gap-2">
+                <span>Saring Kelas:</span>
+                <select id="filterKelasGlobal" onchange="renderTabelGrupGuru()" class="bg-white border border-slate-200 rounded-md px-2 py-1 focus:outline-emerald-500 font-medium text-slate-600">
+                    <option value="SEMUA" ${filterKelasGlobal === 'SEMUA' ? 'selected' : ''}>-- Semua Kelas --</option>
+                    ${Array.from(setKelas).map(k => `<option value="${k}" ${filterKelasGlobal === k ? 'selected' : ''}>Kelas ${k}</option>`).join('')}
+                </select>
+            </div>
             
-            let htmlCardGuru = `
-                <div class="bg-slate-50/60 border border-slate-100 rounded-xl p-5 shadow-xs space-y-4">
-                    <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">
-                                <i class="fa-solid fa-user-tie"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-bold text-slate-800">${namaGuru}</h4>
-                                <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Ditemukan ${daftarAgenda.length} Sesi KBM Berdasarkan Filter</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-xs">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-slate-100 border-b border-slate-200 text-slate-500 font-bold">
-                                    <th class="px-4 py-3 w-28">Tanggal KBM</th>
-                                    <th class="px-4 py-3 w-40">Mata Pelajaran</th>
-                                    <th class="px-4 py-3 w-24 text-center">Kelas</th>
-                                    <th class="px-4 py-3">Pokok Bahasan / Materi Pokok</th>
-                                    <th class="px-4 py-3 text-center w-40">Durasi Absen</th>
-                                    <th class="px-4 py-3">Keterangan</th>
-                                    <th class="px-4 py-3 text-center w-28 d-print-none">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 text-slate-600 font-medium">
-            `;
-            
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer shadow-xs ml-2">
+                <i class="fa-solid fa-print text-[11px]"></i> Cetak Seluruh Jurnal Guru
+            </button>
+
+            <button onclick="muatJurnalGuru()" class="ml-auto flex items-center gap-1 px-3 py-1.5 border border-slate-200 bg-white hover:bg-slate-50 rounded-lg text-slate-600 transition">
+                <i class="fa-solid fa-rotate text-[10px]"></i> Refresh
+            </button>
+        </div>`;
+
+        let htmlCardGuru = toolbarHTML;
+
+        for (const [namaGuru, daftarAgenda] of Object.entries(jurnalPerGuru)) {
+            htmlCardGuru += `
+            <div class="bg-white border border-slate-100 rounded-2xl shadow-xs overflow-hidden mb-6 page-break-after">
+                <div class="bg-slate-50 px-5 py-3 border-b border-slate-100 flex justify-between items-center">
+                    <h4 class="font-bold text-slate-800 text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-user-tie text-emerald-500"></i> ${namaGuru}
+                    </h4>
+                    <button onclick="cetakJurnalSatuGuru('${namaGuru.replace(/'/g, "\\'")}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] px-2.5 py-1 rounded-md transition flex items-center gap-1 cursor-pointer d-print-none shadow-xs">
+                        <i class="fa-solid fa-print"></i> Cetak Jurnal Guru Ini
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100/50 border-b border-slate-100 text-slate-500 font-bold tracking-wide uppercase text-[10px]">
+                                <th class="px-4 py-3 w-44">Tanggal & Waktu KBM</th>
+                                <th class="px-4 py-3 w-40">Mata Pelajaran</th>
+                                <th class="px-4 py-3 w-24 text-center">Kelas</th>
+                                <th class="px-4 py-3">Pokok Bahasan / Materi Pokok</th>
+                                <th class="px-4 py-3 text-center">Foto Dokumentasi</th> 
+                                <th class="px-4 py-3">Keterangan / Catatan</th>
+                                <th class="px-4 py-3 text-center w-28 d-print-none">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-600 font-medium">`;
+
             daftarAgenda.forEach(jurnal => {
                 let tglTampil = "-";
                 if (jurnal.tanggal) {
-                    let strTanggal = String(jurnal.tanggal).split("T")[0];
-                    if (strTanggal.includes("-")) {
-                        const part = strTanggal.split("-");
-                        if(part.length === 3 && part[0].length === 4) {
-                            tglTampil = `${part[2]}-${part[1]}-${part[0]}`;
-                        } else {
-                            tglTampil = strTanggal;
-                        }
+                    let cleanTgl = String(jurnal.tanggal).substring(0, 10);
+                    let splitTgl = cleanTgl.split('-');
+                    if (splitTgl.length === 3) {
+                        tglTampil = `${splitTgl[2]}/${splitTgl[1]}/${splitTgl[0]}`; 
                     } else {
-                        tglTampil = strTanggal;
+                        tglTampil = jurnal.tanggal;
                     }
                 }
 
-                const jamBukaFormat = formatTanggalWaktu(jurnal.tanggal, jurnal.jam_buka);
-                const jamKunciFormat = formatTanggalWaktu(jurnal.tanggal, jurnal.jam_kunci);
-                
-                let safeMateri = (jurnal.materi || '-').replace(/`/g, '\\`').replace(/"/g, '&quot;');
-                let safeKeterangan = (jurnal.keterangan || '-').replace(/`/g, '\\`').replace(/"/g, '&quot;');
-                let safeGuru = namaGuru.replace(/"/g, '&quot;');
-                let safeMapel = (jurnal.mata_pelajaran || '-').replace(/"/g, '&quot;');
-                let safeKelas = (jurnal.kelas || '-').replace(/"/g, '&quot;');
-                let safeTipe = (jurnal.tipe_sesi || 'KBM Biasa').replace(/"/g, '&quot;');
-                
-                // Ambil ID unik agenda dari database secara aman
-                let idAgendaAsli = jurnal.id_agenda || ''; 
-                let customIdCetak = idAgendaAsli || ('AGD-' + String(1000 + jurnal.indexAsli));
+                let jamTampilText = `${bersihkanJam(jurnal.jam_buka, '00:00')} - ${bersihkanJam(jurnal.jam_kunci, '00:00')}`;
+
+                let gabungWaktuTabel = `${tglTampil}<br><span class="text-[10px] text-emerald-600 font-bold">${jamTampilText} WIB</span>`;
+                let catatanBersih = (jurnal.keterangan && !String(jurnal.keterangan).includes('1899-')) ? jurnal.keterangan : '-';
+
+                let fotoHTML = `<span class="text-slate-400 italic text-[11px]">Tidak ada foto</span>`;
+                if (jurnal.foto && jurnal.foto !== "-" && jurnal.foto.startsWith("http")) {
+                    fotoHTML = `
+                    <div class="relative group cursor-pointer inline-block" onclick="bukaPreviewFoto('${jurnal.foto}')">
+                        <img src="${jurnal.foto}" class="w-12 h-9 object-cover rounded-md border border-slate-200 hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/120x90?text=Error+Gambar'">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-md">
+                            <i class="fa-solid fa-magnifying-glass text-white text-[10px]"></i>
+                        </div>
+                    </div>`;
+                }
 
                 htmlCardGuru += `
-                    <tr class="hover:bg-slate-50/70 transition-colors">
-                        <td class="px-4 py-3 font-semibold text-slate-500">${tglTampil}</td>
-                        <td class="px-4 py-3 font-bold text-emerald-800">${jurnal.mata_pelajaran || '-'}</td>
-                        <td class="px-4 py-3 text-center">
-                            <span class="inline-block px-2 py-0.5 font-bold rounded bg-slate-100 text-slate-700 border border-slate-200/60">${jurnal.kelas || '-'}</span>
-                        </td>
-                        <td class="px-4 py-3 text-slate-700 max-w-xs truncate" title="${safeMateri}">${jurnal.materi || '-'}</td>
-                        <td class="px-4 py-3 text-center font-mono text-[10px] leading-tight bg-slate-50/40">
-                            <div class="text-emerald-600 font-bold">🔓 Buka: ${jamBukaFormat}</div>
-                            <div class="text-rose-600 font-bold mt-0.5">🔒 Kunci: ${jamKunciFormat}</div>
-                        </td>
-                        <td class="px-4 py-3 text-slate-400 italic max-w-xs truncate" title="${safeKeterangan}">${jurnal.keterangan || '-'}</td>
-                        <td class="px-4 py-3 text-center">
-                            <div class="flex items-center justify-center gap-1.5 d-print-none">
-                                <button onclick="bukaModalCetakPDF('${customIdCetak}', '${tglTampil}', '${safeGuru}', '${safeMapel} - Kelas: ${safeKelas}', \`${safeMateri}\`, \`${safeKeterangan}\`, '${safeTipe}')" class="p-1 px-2 text-[11px] font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded transition-colors cursor-pointer" title="Cetak Berita Acara">
-                                    <i class="fas fa-file-pdf"></i>
-                                </button>
-                                <button onclick="bukaModalEditAdmin('${idAgendaAsli}', \`${safeMateri}\`, \`${safeKeterangan}\`)" class="p-1 text-amber-600 hover:bg-amber-50 rounded transition-colors cursor-pointer" title="Edit Data">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button onclick="eksekusiHapusAdmin('${idAgendaAsli}')" class="p-1 text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer" title="Hapus Permanen">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                    <td class="px-4 py-3 font-semibold text-slate-600">${gabungWaktuTabel}</td>
+                    <td class="px-4 py-3 font-bold text-emerald-800">${jurnal.mata_pelajaran || '-'}</td>
+                    <td class="px-4 py-3 text-center"><span class="inline-block px-2 py-0.5 font-bold rounded bg-slate-100">${jurnal.kelas || '-'}</span></td>
+                    <td class="px-4 py-3">${jurnal.materi || '-'}</td>
+                    <td class="px-4 py-3 text-center">${fotoHTML}</td>
+                    <td class="px-4 py-3 text-slate-500">${catatanBersih}</td>
+                    <td class="px-4 py-3 text-center d-print-none">
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button onclick="bukaModalCetakPDF('${jurnal.id_agenda || ''}', '${jurnal.tanggal || ''}', '${String(namaGuru).replace(/'/g, "\\'")}', '${String(jurnal.mata_pelajaran || '-').replace(/'/g, "\\'")} - ${String(jurnal.kelas || '-').replace(/'/g, "\\'")}', '${String(jurnal.materi || '-').replace(/'/g, "\\'")}', '${String(jurnal.keterangan || '-').replace(/'/g, "\\'")}', '${jurnal.tipe_sesi || 'KBM Biasa'}', '${String(jurnal.jam_buka || '').replace(/'/g, "\\'")}', '${String(jurnal.jam_kunci || '').replace(/'/g, "\\'")}')" class="text-blue-600 hover:bg-blue-50 p-1.5 rounded-md transition" title="Cetak Berita Acara"><i class="fa-solid fa-file-pdf"></i></button>
+                            <button onclick="bukaModalEditAdmin('${jurnal.id_agenda || ''}', '${String(jurnal.materi || '').replace(/'/g, "\\'")}', '${String(jurnal.keterangan || '').replace(/'/g, "\\'")}')" class="text-amber-600 hover:bg-amber-50 p-1.5 rounded-md transition" title="Koreksi Materi"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="eksekusiHapusAdmin('${jurnal.id_agenda || ''}')" class="text-rose-500 hover:bg-rose-50 p-1.5 rounded-md transition" title="Hapus Permanen"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
             });
-            
-            htmlCardGuru += `
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-            
-            groupContainer.innerHTML += htmlCardGuru;
-        });
+
+            htmlCardGuru += `</tbody></table></div></div>`;
+        }
+        groupContainer.innerHTML = htmlCardGuru;
     }
 
+    // 🖨️ 2. FUNGSI UNTUK MEMBUKA MODAL CETAK PDF (KOP SURAT RESMI)
+    function bukaModalCetakPDF(id, tanggal, guru, kelasMapel, materi, catatan, tipeSesi, jamBuka, jamKunci) {
+        let tglFormated = "-";
+        if (tanggal) {
+            let cleanTgl = String(tanggal).substring(0, 10);
+            let splitTgl = cleanTgl.split('-');
+            if (splitTgl.length === 3) tglFormated = `${splitTgl[2]}/${splitTgl[1]}/${splitTgl[0]}`;
+        }
+
+        let jamFormated = "";
+        if (jamBuka || jamKunci) {
+            jamFormated = ` ${bersihkanJam(jamBuka, '00:00')}-${bersihkanJam(jamKunci, '00:00')} WIB`;
+        }
+
+        let bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        let tglTtdRapi = "-";
+        if (tanggal) {
+            let splitTgl = String(tanggal).substring(0, 10).split('-');
+            if (splitTgl.length === 3) {
+                tglTtdRapi = `${splitTgl[2]} ${bulanIndo[parseInt(splitTgl[1], 10) - 1] || splitTgl[1]} ${splitTgl[0]}`;
+            }
+        }
+
+        document.getElementById('pdfIdAgenda').innerText = id || '-';
+        document.getElementById('pdfNamaGuru').innerText = guru || '-';
+        document.getElementById('pdfKelasMapel').innerText = kelasMapel || '-';
+        document.getElementById('pdfTanggal').innerText = `${tglFormated}${jamFormated}`;
+        document.getElementById('pdfTipeSesi').innerText = tipeSesi || 'KBM Biasa';
+        document.getElementById('pdfMateri').innerText = materi || '-';
+        document.getElementById('pdfCatatan').innerText = (catatan && !String(catatan).includes('1899-')) ? catatan : '-';
+        document.getElementById('pdfTanggalTtd').innerText = `Lembang, ${tglTtdRapi}`;
+
+        document.getElementById('modalCetakAgenda').classList.remove('hidden');
+        document.body.classList.add('mode-cetak-agenda');
+    }
+
+    // 📝 3. FUNGSI UNTUK MEMBUKA MODAL EDIT / KOREKSI DATA JURNAL
+    function bukaModalEditAdmin(idAgenda, materiLama, keteranganLama) {
+        document.getElementById('editIdAgenda').value = idAgenda;
+        document.getElementById('editMateri').value = materiLama;
+        
+        // Jika isi keterangan lama mengandung tanggal 1899, kosongkan form agar bersih
+        document.getElementById('editKeterangan').value = String(keteranganLama).includes('1899-') ? '' : keteranganLama;
+        
+        // Munculkan modal edit
+        document.getElementById('modalEditJurnalAdmin').classList.remove('hidden');
+    }
+
+    // 💾 4. FUNGSI UNTUK MENYIMPAN HASIL EDIT KE DATABASE (WEB APP SCRIPT)
+    async function simpanKoreksiAdmin() {
+        const idAgenda = document.getElementById('editIdAgenda').value;
+        const materiBaru = document.getElementById('editMateri').value;
+        const keteranganBaru = document.getElementById('editKeterangan').value;
+
+        if (!idAgenda) return alert("ID Agenda tidak ditemukan!");
+
+        try {
+            // Tampilkan loading panel pembantu jika ada
+            constbtn = document.querySelector("#modalEditJurnalAdmin button[onclick='simpanKoreksiAdmin()']");
+            const tksAwal = constbtn ? constbtn.innerHTML : "Simpan";
+            if(constbtn) constbtn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Menyimpan...";
+
+            const respon = await fetch(`${urlWebAppJurnal}?aksi=koreksiJurnalAdmin&id_agenda=${encodeURIComponent(idAgenda)}&materi=${encodeURIComponent(materiBaru)}&keterangan=${encodeURIComponent(keteranganBaru)}`);
+            const hasil = await respon.json();
+
+            if (hasil.status === 'sukses') {
+                alert("Berhasil memperbarui data jurnal!");
+                document.getElementById('modalEditJurnalAdmin').classList.add('hidden');
+                muatJurnalGuru(); // Memuat ulang data dari database
+            } else {
+                alert("Gagal: " + hasil.pesan);
+            }
+            if(constbtn) constbtn.innerHTML = tksAwal;
+        } catch (err) {
+            console.error(err);
+            alert("Terjadi kesalahan jaringan saat menyimpan data.");
+        }
+    }
     // 5. PROSES DAFTARKAN JADWAL PELAJARAN BARU
     const formJadwal = document.getElementById('formJadwal');
     if (formJadwal) {
@@ -746,17 +1110,32 @@
                     if (item.status === "DISETUJUI") statusClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
                     if (item.status === "DITOLAK") statusClass = "bg-rose-50 text-rose-700 border-rose-200";
 
+                    // 📷 Tampilkan thumbnail foto bukti (bukan cuma link teks) agar admin bisa langsung melihat isinya
+                    const urlBukti = item.link_berkas || item.bukti || "";
+                    let buktiHTML = `<span class="text-slate-400 italic text-[11px]">Tidak ada bukti</span>`;
+                    if (urlBukti && urlBukti.startsWith("http")) {
+                        buktiHTML = `
+                        <div class="flex flex-col items-center gap-1">
+                            <div class="relative group cursor-pointer inline-block" onclick="bukaPreviewFoto('${urlBukti}')">
+                                <img src="${urlBukti}" class="w-14 h-11 object-cover rounded-md border border-slate-200 hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/120x90?text=Gagal+Muat'">
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-md">
+                                    <i class="fa-solid fa-magnifying-glass text-white text-[10px]"></i>
+                                </div>
+                            </div>
+                            <a href="${urlBukti}" target="_blank" class="text-[10px] font-semibold text-blue-600 hover:underline">Buka Tab Baru</a>
+                        </div>`;
+                    } else if (urlBukti && urlBukti.indexOf("Gagal upload") === 0) {
+                        const pesanErrorAman = urlBukti.replace(/'/g, "\\'").replace(/\n/g, ' ');
+                        buktiHTML = `<span class="text-rose-500 italic text-[11px] cursor-pointer underline decoration-dotted" onclick="alert('Detail error upload:\\n\\n${pesanErrorAman}')" title="Klik untuk lihat detail error lengkap"><i class="fa-solid fa-triangle-exclamation"></i> Upload gagal (klik detail)</span>`;
+                    }
+
                     let row = `
                         <tr class="hover:bg-slate-50/50 transition-colors">
                             <td class="px-6 py-4 font-mono font-bold text-slate-700">${item.id_keringanan || '-'}</td>
                             <td class="px-6 py-4 font-semibold text-slate-600">${item.nisn_siswa || item.id_siswa || '-'}</td>
                             <td class="px-6 py-4 text-slate-600 max-w-xs truncate" title="${item.alasan}">${item.alasan || '-'}</td>
                             <td class="px-6 py-4 text-center font-mono text-[11px] text-slate-400 font-bold">${item.id_agenda || '-'}</td>
-                            <td class="px-6 py-4 text-center">
-                                <a href="${item.link_berkas || item.bukti}" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:underline">
-                                    <i class="fa-solid fa-file-lines"></i> Lihat Bukti
-                                </a
-                            </td>
+                            <td class="px-6 py-4 text-center">${buktiHTML}</td>
                             <td class="px-6 py-4 text-center">
                                 <span class="inline-block px-2.5 py-1 text-xs font-bold border rounded-full ${statusClass}">${item.status || 'Pending'}</span>
                             </td>
@@ -892,29 +1271,80 @@
     // =========================================================================
     // 🕹️ REPARASI TOTAL: KONTROL MODAL & AKSI ACTION MONITOR JURNAL ADMIN (FIXED NOTIF)
     // =========================================================================
-    function bukaModalCetakPDF(id, tanggal, guru, kelasMapel, materi, catatan, tipeSesi) {
-        document.getElementById('pdfIdAgenda').innerText = id;
-        document.getElementById('pdfNamaGuru').innerText = guru;
-        document.getElementById('pdfKelasMapel').innerText = kelasMapel;
-        document.getElementById('pdfTanggal').innerText = tanggal;
-        document.getElementById('pdfTipeSesi').innerText = tipeSesi;
-        document.getElementById('pdfMateri').innerText = materi;
-        document.getElementById('pdfCatatan').innerText = catatan;
-        document.getElementById('pdfTanggalTtd').innerText = tanggal;
-
-        document.getElementById('modalCetakAgenda').classList.remove('hidden');
+    // Fungsi Pembantu untuk Merapikan Tanggal dan Jam secara Otomatis
+function formatWaktuLengkapJurnal(tanggalMentah, keteranganMentah) {
+    let tglFormated = "-";
+    if (tanggalMentah) {
+        let cleanTgl = String(tanggalMentah).substring(0, 10);
+        let splitTgl = cleanTgl.split('-');
+        if (splitTgl.length === 3) {
+            tglFormated = `${splitTgl[2]}/${splitTgl[1]}/${splitTgl[0]}`; // Hasil: 15/01/2026
+        } else {
+            tglFormated = tanggalMentah;
+        }
     }
-
-    function tutupModalCetak() {
-        document.getElementById('modalCetakAgenda').classList.add('hidden');
+    
+    let jamFormated = "";
+    if (keteranganMentah && String(keteranganMentah).includes('1899-')) {
+        let bersih = String(keteranganMentah).replace(' WIB', '');
+        let splitWaktu = bersih.split(' - ');
+        let m1 = splitWaktu[0] ? splitWaktu[0].match(/T(\d{2}):(\d{2})/) : null;
+        let m2 = splitWaktu[1] ? splitWaktu[1].match(/T(\d{2}):(\d{2})/) : null;
+        let jMulai = m1 ? `${m1[1]}:${m1[2]}` : "00:00";
+        let jSelesai = m2 ? `${m2[1]}:${m2[2]}` : "00:00";
+        jamFormated = ` ${jMulai}-${jSelesai} WIB`;
+    } else if (keteranganMentah) {
+        jamFormated = ` ${keteranganMentah}`;
     }
+    
+    return `${tglFormated}${jamFormated}`;
+}
 
-    function bukaModalEditAdmin(id, materi, catatan) {
-        document.getElementById('editIdAgendaAdmin').value = id;
-        document.getElementById('editMateriAdmin').value = materi === "undefined" || materi === "-" ? "" : materi;
-        document.getElementById('editCatatanAdmin').value = catatan === "undefined" || catatan === "-" ? "" : catatan;
-        document.getElementById('modalEditAgendaAdmin').classList.remove('hidden');
-    }
+// // Fungsi Utama Cetak PDF yang Sudah Diperbaiki
+// function bukaModalCetakPDF(id, tanggal, guru, kelasMapel, materi, catatan, tipeSesi) {
+//     // 1. Format waktu otomatis untuk tabel modal
+//     let formatWaktuBersih = formatWaktuLengkapJurnal(tanggal, catatan);
+
+//     // 2. Format tanggal lokal Indonesia untuk Tanda Tangan (Contoh: 15 Juli 2026)
+//     let bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+//     let tglTtdRapi = "-";
+//     if (tanggal) {
+//         let cleanTgl = String(tanggal).substring(0, 10);
+//         let splitTgl = cleanTgl.split('-');
+//         if (splitTgl.length === 3) {
+//             let idxBulan = parseInt(splitTgl[1], 10) - 1;
+//             tglTtdRapi = `${splitTgl[2]} ${bulanIndo[idxBulan] || splitTgl[1]} ${splitTgl[0]}`;
+//         }
+//     }
+
+//     // 3. Masukkan data ke elemen modal
+//     document.getElementById('pdfIdAgenda').innerText = id || '-';
+//     document.getElementById('pdfNamaGuru').innerText = guru || '-';
+//     document.getElementById('pdfKelasMapel').innerText = kelasMapel || '-';
+//     document.getElementById('pdfTanggal').innerText = formatWaktuBersih; // Menampilkan format rapi
+//     document.getElementById('pdfTipeSesi').innerText = tipeSesi || 'KBM Biasa';
+//     document.getElementById('pdfMateri').innerText = materi || '-';
+    
+//     // Jika kolom catatan berisi teks error waktu, kosongkan agar bersih
+//     document.getElementById('pdfCatatan').innerText = (catatan && !catatan.includes('1899-')) ? catatan : '-';
+//     document.getElementById('pdfTanggalTtd').innerText = `Lembang, ${tglTtdRapi}`;
+
+//     // 4. Munculkan Modal
+//     document.getElementById('modalCetakAgenda').classList.remove('hidden');
+//     document.body.classList.add('mode-cetak-agenda');
+// }
+
+    // function tutupModalCetak() {
+    //     document.getElementById('modalCetakAgenda').classList.add('hidden');
+    //     document.body.classList.remove('mode-cetak-agenda');
+    // }
+
+    // function bukaModalEditAdmin(id, materi, catatan) {
+    //     document.getElementById('editIdAgendaAdmin').value = id;
+    //     document.getElementById('editMateriAdmin').value = materi === "undefined" || materi === "-" ? "" : materi;
+    //     document.getElementById('editCatatanAdmin').value = catatan === "undefined" || catatan === "-" ? "" : catatan;
+    //     document.getElementById('modalEditAgendaAdmin').classList.remove('hidden');
+    // }
 
     function tutupModalEditAdmin() {
         document.getElementById('modalEditAgendaAdmin').classList.add('hidden');
@@ -991,82 +1421,164 @@
             muatJurnalGuru(); // Tetap lakukan refresh otomatis demi kenyamanan
         }
     }
-</script>
-<div id="modalCetakAgenda" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-9999 hidden d-print-none">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col popup-animasi">
-            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 rounded-t-xl">
-                <h3 class="text-base font-semibold text-slate-800 flex items-center gap-2">
-                    <i class="fas fa-file-pdf text-rose-500 text-lg"></i> Pratinjau Cetak Berita Acara & Jurnal Mengajar
-                </h3>
-                <button onclick="tutupModalCetak()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-white transition-colors cursor-pointer text-xl">&times;</button>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto p-12 bg-white" id="areaCetakDokumen" style="font-family: 'Times New Roman', Times, serif; color: #000; line-height: 1.5;">
-                <div class="flex items-center justify-center pb-3 mb-4" style="gap: 24px; border-bottom: 4px double #000;">
-                    <img src="img-logo-pkbm.png" class="img-logo-pkbm" alt="Logo PKBM" style="width: 85px; height: 85px; object-fit: contain; shrink: 0;">
-                    <div class="text-center" style="flex-grow: 1;">
-                        <h4 style="margin: 0; font-weight: bold; font-size: 16px; font-family: Arial, sans-serif;">YAYASAN CAHAYA KAHURIPAN BANGSA</h4>
-                        <h3 style="margin: 2px 0 0 0; font-weight: bold; font-size: 20px; font-family: Arial, sans-serif;">PKBM CAHAYA KAHURIPAN BANGSA</h3>
-                        <p style="margin: 2px 0 0 0; font-size: 11px; font-family: Arial, sans-serif; font-weight: bold;">Izin Operasional No: 421.9/ Kep.322-Disdik/2020 | NPSN: P9997484 | Terakreditasi B</p>
-                        <p style="margin: 1px 0 0 0; font-size: 10px; font-family: Arial, sans-serif; font-style: italic; color: #333;">Jl. Raya Wangunharja No. 12, Kec. Lembang, Kabupaten Bandung Barat</p>
+    // 📷 FITUR BARU: FUNGSI MEMBUKA PREVIEW MODAL FOTO UKURAN BESAR
+    function bukaPreviewFoto(urlFoto) {
+        let modalFoto = document.getElementById('modalPreviewFotoOverlay');
+        if (!modalFoto) {
+            // Jika element belum ada, buat dinamis agar tidak merusak HTML utama
+            modalFoto = document.createElement('div');
+            modalFoto.id = 'modalPreviewFotoOverlay';
+            modalFoto.className = 'fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[200] flex justify-center items-center p-4 hidden';
+            modalFoto.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl p-4 max-w-2xl w-full relative">
+                    <button onclick="document.getElementById('modalPreviewFotoOverlay').classList.add('hidden')" class="absolute -top-3 -right-3 text-white hover:text-rose-500 bg-slate-800 p-2.5 rounded-full cursor-pointer transition-colors shadow-lg z-50">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                    <div class="overflow-hidden rounded-xl bg-slate-50 max-h-[75vh] flex items-center justify-center">
+                        <img id="imgPreviewBesar" src="" class="max-w-full max-h-[70vh] object-contain mx-auto">
                     </div>
                 </div>
+            `;
+            document.body.appendChild(modalFoto);
+        }
+        document.getElementById('imgPreviewBesar').src = urlFoto;
+        modalFoto.classList.remove('hidden');
+    }
 
-                <div class="text-center mb-6">
-                    <h5 style="margin:0; font-weight: bold; font-size: 15px; text-transform: uppercase; text-decoration: underline; letter-spacing: 0.5px;">BERITA ACARA & JURNAL AGENDA MENGAJAR</h5>
-                    <p style="margin: 2px 0 0 0; font-size: 12px;">Nomor Dokumen: <span id="pdfIdAgenda" style="font-weight: bold;">-</span></p>
+    // 🖨️ FITUR BARU: FUNGSI CETAK SPESIFIK HANYA JURNAL GURU TERTENTU
+    function cetakJurnalSatuGuru(namaGuru) {
+        // Beri kelas sembunyi (hidden) sementara ke element guru lain di window print
+        const semuaCard = document.querySelectorAll('#containerJurnalPerGuru > div');
+        semuaCard.forEach(card => {
+            const heading = card.querySelector('h4');
+            if (heading && !heading.innerText.includes(namaGuru)) {
+                card.classList.add('d-none-print');
+            }
+        });
+        
+        window.print();
+        
+        // Kembalikan ke normal setelah dialog print ditutup
+        semuaCard.forEach(card => card.classList.remove('d-none-print'));
+    }
+</script>
+    <div id="modalCetakAgenda" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4 overflow-y-auto">
+        <div id="areaCetakDokumen" class="bg-white w-full max-w-3xl rounded-2xl shadow-xl p-8 border border-slate-100 my-auto text-black">
+            
+            <div class="flex items-center gap-4 border-b-[4px] border-double border-black pb-3 mb-6">
+                <img src="logo-dinas-kab-bandung-barat.jpeg" class="w-20 h-20 object-contain shrink-0">
+                <div class="flex-1 text-center">
+                    <h3 class="text-[13px] font-bold tracking-wide uppercase m-0 text-black leading-tight">Dinas Pendidikan Kabupaten Bandung Barat</h3>
+                    <h2 class="text-[13px] font-bold uppercase m-0 text-black leading-tight">Pusat Kegiatan Belajar Masyarakat (PKBM)</h2>
+                    <h1 class="text-xl font-bold uppercase m-0 tracking-wide text-black leading-tight">Cahaya Kahuripan Bangsa</h1>
+                    <div class="text-[11px] font-bold italic my-0.5 text-black">TERAKREDITASI "A" BAN PDM</div>
+                    <div class="text-[9px] text-black leading-tight">Izin Disdikpora Kabupaten Bandung Barat Nomor: 421/047.17disdikpora/2017</div>
+                    <div class="text-[9px] text-black leading-tight">Alamat: Jl. Maribaya No.1 Ruko Central Lembang Blok B-6, Lembang, Kabupaten Bandung Barat 40391</div>
+                    <div class="text-[9px] font-semibold text-black leading-tight">TELEPON: 2786466, Email/website: pkbmckb.org</div>
                 </div>
+                <img src="img-logo-pkbm.png" class="w-20 h-20 object-contain shrink-0">
+            </div>
 
-                <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 20px;">
-                    <tr>
-                        <td style="width: 30%; border: 1px solid #000; padding: 8px 12px; font-weight: bold; background-color: #fcfcfc;">Nama Pendidik / Guru</td>
-                        <td style="width: 70%; border: 1px solid #000; padding: 8px 12px; font-weight: bold;" id="pdfNamaGuru">-</td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #000; padding: 8px 12px; font-weight: bold; background-color: #fcfcfc;">Mata Pelajaran & Kelas</td>
-                        <td style="border: 1px solid #000; padding: 8px 12px;" id="pdfKelasMapel">-</td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #000; padding: 8px 12px; font-weight: bold; background-color: #fcfcfc;">Tanggal Pelaksanaan</td>
-                        <td style="border: 1px solid #000; padding: 8px 12px;" id="pdfTanggal">-</td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #000; padding: 8px 12px; font-weight: bold; background-color: #fcfcfc;">Sifat / Tipe Sesi KBM</td>
-                        <td style="border: 1px solid #000; padding: 8px 12px;" id="pdfTipeSesi">-</td>
-                    </tr>
-                </table>
+            <div class="text-center text-base font-bold underline uppercase mb-6 text-black tracking-wide">
+                Berita Acara & Log Aktivitas Mengajar Guru
+            </div>
 
-                <div style="font-size: 13px; font-weight: bold; margin-bottom: 4px;">A. Pokok Bahasan / Materi Pembelajaran yang Disampaikan:</div>
-                <div id="pdfMateri" style="font-size: 13px; border: 1px solid #000; padding: 12px; min-height: 90px; white-space: pre-line; background: #fff; margin-bottom: 16px;">
-                    -
-                </div>
+            <div class="text-right text-[10px] text-slate-400 mb-2">ID Agenda: <span id="pdfIdAgenda"></span></div>
 
-                <div style="font-size: 13px; font-weight: bold; margin-bottom: 4px;">B. Catatan Kejadian Kelas / Keterangan Tambahan:</div>
-                <div id="pdfCatatan" style="font-size: 13px; border: 1px solid #000; padding: 12px; min-height: 60px; white-space: pre-line; background: #fff; font-style: italic; margin-bottom: 30px;">
-                    -
-                </div>
+            <table class="w-full border-collapse border border-black mb-10 text-sm">
+                <tr>
+                    <td class="border border-black p-3 font-bold bg-slate-50 w-[30%] text-black">Nama Pendidik / Guru</td>
+                    <td id="pdfNamaGuru" class="border border-black p-3 text-black"></td>
+                </tr>
+                <tr>
+                    <td class="border border-black p-3 font-bold bg-slate-50 text-black">Tanggal & Waktu KBM</td>
+                    <td id="pdfTanggal" class="border border-black p-3 text-black font-semibold"></td>
+                </tr>
+                <tr>
+                    <td class="border border-black p-3 font-bold bg-slate-50 text-black">Mata Pelajaran & Kelas</td>
+                    <td id="pdfKelasMapel" class="border border-black p-3 text-black"></td>
+                </tr>
+                <tr>
+                    <td class="border border-black p-3 font-bold bg-slate-50 text-black">Tipe Sesi Pertemuan</td>
+                    <td id="pdfTipeSesi" class="border border-black p-3 text-black"></td>
+                </tr>
+                <tr>
+                    <td class="border border-black p-3 font-bold bg-slate-50 text-black">Pokok Bahasan / Materi</td>
+                    <td id="pdfMateri" class="border border-black p-3 text-black"></td>
+                </tr>
+                <tr>
+                    <td class="border border-black p-3 font-bold bg-slate-50 text-black">Catatan / Keterangan</td>
+                    <td id="pdfCatatan" class="border border-black p-3 text-black"></td>
+                </tr>
+            </table>
 
-                <div style="width: 100%; font-size: 13px; margin-top: 10px;">
-                    <table style="width: 100%; border: none;">
-                        <tr>
-                            <td style="width: 55%; border: none;"></td>
-                            <td style="width: 45%; text-align: center; border: none;">
-                                <p style="margin: 0 0 4px 0;">Lembang, <span id="pdfTanggalTtd">........... 2026</span></p>
-                                <p style="margin: 0 0 60px 0; font-weight: bold; line-height: 1.3;">Mengetahui,<br>Kepala PKBM Cahaya Kahuripan Bangsa</p>
-                                <p style="margin: 0; font-weight: bold; text-decoration: underline;">( .................................................... )</p>
-                                <p style="margin: 2px 0 0 0; font-size: 10px; color: #555;">NIP/NIY. .....................................</p>
-                            </td>
-                        </tr>
-                    </table>
+            <div class="mt-12 flex justify-end">
+                <div class="text-center text-sm text-black w-[300px]">
+                    <p id="pdfTanggalTtd" class="mb-1"></p>
+                    <p class="mb-24">Kepala PKBM Cahaya Kahuripan Bangsa,</p>
+                    <p class="font-bold underline uppercase text-black">Lince Sari Dianawati Leatemia, M.Pd.</p>
                 </div>
             </div>
-            
-            <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-end gap-2 bg-slate-50 rounded-b-xl">
-                <button onclick="tutupModalCetak()" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg cursor-pointer">Batal</button>
-                <button onclick="window.print()" class="px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-xs flex items-center gap-1.5 cursor-pointer">
-                    <i class="fas fa-print"></i> Eksekusi Cetak / PDF
+
+            <div class="mt-8 flex justify-end gap-3 d-print-none">
+                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl shadow-xs text-sm font-medium flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-print"></i> Cetak Dokumen
+                </button>
+                <button onclick="document.getElementById('modalCetakAgenda').classList.add('hidden'); document.body.classList.remove('mode-cetak-agenda');" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-medium cursor-pointer">
+                    Tutup
                 </button>
             </div>
+
+        </div>
+    </div>
+
+
+    <div id="modalCetakJadwal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4 overflow-y-auto">
+        <div id="areaCetakJadwalDokumen" class="bg-white w-full max-w-3xl rounded-2xl shadow-xl p-8 border border-slate-100 my-auto text-black">
+
+            <div class="flex items-center gap-4 border-b-[4px] border-double border-black pb-3 mb-6">
+                <img src="logo-dinas-kab-bandung-barat.jpeg" class="w-20 h-20 object-contain shrink-0">
+                <div class="flex-1 text-center">
+                    <h3 class="text-[13px] font-bold tracking-wide uppercase m-0 text-black leading-tight">Dinas Pendidikan Kabupaten Bandung Barat</h3>
+                    <h2 class="text-[13px] font-bold uppercase m-0 text-black leading-tight">Pusat Kegiatan Belajar Masyarakat (PKBM)</h2>
+                    <h1 class="text-xl font-bold uppercase m-0 tracking-wide text-black leading-tight">Cahaya Kahuripan Bangsa</h1>
+                    <div class="text-[11px] font-bold italic my-0.5 text-black">TERAKREDITASI "A" BAN PDM</div>
+                    <div class="text-[9px] text-black leading-tight">Izin Disdikpora Kabupaten Bandung Barat Nomor: 421/047.17disdikpora/2017</div>
+                    <div class="text-[9px] text-black leading-tight">Alamat: Jl. Maribaya No.1 Ruko Central Lembang Blok B-6, Lembang, Kabupaten Bandung Barat 40391</div>
+                    <div class="text-[9px] font-semibold text-black leading-tight">TELEPON: 2786466, Email/website: pkbmckb.org</div>
+                </div>
+                <img src="img-logo-pkbm.png" class="w-20 h-20 object-contain shrink-0">
+            </div>
+
+            <div class="text-center mb-4">
+                <div id="judulCetakJadwal" class="text-lg font-bold uppercase tracking-wide text-black m-0">JADWAL PELAJARAN</div>
+                <div id="subInfoCetakJadwal" class="text-sm font-bold text-black mt-1"></div>
+            </div>
+
+            <table class="w-full border-collapse border border-black mb-10 text-sm">
+                <thead>
+                    <tr id="headerTabelCetakJadwal" class="text-center"></tr>
+                </thead>
+                <tbody id="bodyTabelCetakJadwal" class="text-black"></tbody>
+            </table>
+
+            <div class="mt-12 flex justify-end">
+                <div class="text-center text-sm text-black w-[300px]">
+                    <p id="tanggalCetakJadwal" class="mb-1"></p>
+                    <p class="mb-24">Kepala PKBM Cahaya Kahuripan Bangsa,</p>
+                    <p class="font-bold underline uppercase text-black">Lince Sari Dianawati Leatemia, M.Pd.</p>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end gap-3 d-print-none">
+                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl shadow-xs text-sm font-medium flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-print"></i> Cetak Dokumen
+                </button>
+                <button onclick="tutupCetakJadwal()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-medium cursor-pointer">
+                    Tutup
+                </button>
+            </div>
+
         </div>
     </div>
 
@@ -1097,18 +1609,27 @@
     </div>
 
     <style>
+    /* 🖨️ MODE 1: Cetak Berita Acara satu sesi (modal #modalCetakAgenda) */
+    /* Rule agresif ini HANYA aktif saat body diberi class 'mode-cetak-agenda' oleh JS,
+       supaya tidak ikut menyembunyikan tabel Monitor Jurnal Guru saat mode cetak massal (Mode 2). */
     @media print {
-        body, aside, main, nav, header, section, div:not(#modalCetakAgenda) {
+        body.mode-cetak-agenda aside,
+        body.mode-cetak-agenda main,
+        body.mode-cetak-agenda nav,
+        body.mode-cetak-agenda header,
+        body.mode-cetak-agenda section,
+        body.mode-cetak-agenda > div:not(#modalCetakAgenda) {
             visibility: hidden !important;
             height: 0 !important;
             margin: 0 !important;
             padding: 0 !important;
             box-shadow: none !important;
         }
-        #modalCetakAgenda, #modalCetakAgenda * {
+        body.mode-cetak-agenda #modalCetakAgenda,
+        body.mode-cetak-agenda #modalCetakAgenda * {
             visibility: visible !important;
         }
-        #modalCetakAgenda {
+        body.mode-cetak-agenda #modalCetakAgenda {
             position: absolute !important;
             left: 0 !important;
             top: 0 !important;
@@ -1116,7 +1637,7 @@
             background: #fff !important;
             display: block !important;
         }
-        #areaCetakDokumen {
+        body.mode-cetak-agenda #areaCetakDokumen {
             position: absolute !important;
             left: 0 !important;
             top: 0 !important;
@@ -1127,6 +1648,66 @@
         }
         .d-print-none {
             display: none !important;
+        }
+    }
+    /* 🖨️ MODE 3: Cetak Jadwal Pelajaran (per guru / per kelas) - modal #modalCetakJadwal */
+    @media print {
+        body.mode-cetak-jadwal aside,
+        body.mode-cetak-jadwal main,
+        body.mode-cetak-jadwal nav,
+        body.mode-cetak-jadwal header,
+        body.mode-cetak-jadwal section,
+        body.mode-cetak-jadwal > div:not(#modalCetakJadwal) {
+            visibility: hidden !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+        body.mode-cetak-jadwal #modalCetakJadwal,
+        body.mode-cetak-jadwal #modalCetakJadwal * {
+            visibility: visible !important;
+        }
+        body.mode-cetak-jadwal #modalCetakJadwal {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            background: #fff !important;
+            display: block !important;
+        }
+        body.mode-cetak-jadwal #areaCetakJadwalDokumen {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            padding: 0px !important;
+            margin: 0px !important;
+            border: none !important;
+        }
+    }
+    /* 🖨️ MODE 2: Cetak massal tabel Jurnal Guru (per guru / per mapel / per kelas) */
+    /* Cukup sembunyikan sidebar, header, dan tombol aksi; biarkan konten tabel tampil apa adanya. */
+    @media print {
+        aside, header, .d-print-none, .menu-btn, button, form {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        main {
+            padding-left: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+        }
+        .page-break-after {
+            page-break-after: always;
+            margin-bottom: 2rem;
+        }
+        .d-none-print {
+            display: none !important;
+        }
+        body {
+            background-color: #fff !important;
+            color: #000 !important;
         }
     }
     </style>

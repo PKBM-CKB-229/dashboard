@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Warga Belajar PKBM</title>
+    <title>Siswa - PKBM CKB</title>
     <link rel="icon" type="image/png" href="img-logo-pkbm.png">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,8 +14,8 @@
     <div class="absolute top-0 right-0 w-72 h-72 sm:w-96 sm:h-96 bg-gradient-to-bl from-sky-400/10 to-teal-400/5 blur-3xl rounded-full pointer-events-none z-0"></div>
     <div class="absolute bottom-10 left-0 sm:left-64 w-64 h-64 sm:w-80 sm:h-80 bg-gradient-to-tr from-emerald-400/10 to-cyan-400/5 blur-3xl rounded-full pointer-events-none z-0"></div>
 
-    <header class="md:hidden bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 py-3 flex justify-between items-center fixed top-0 inset-x-0 z-40 shadow-xs">
-        <div class="flex items-center gap-2">
+    <header class="md:hidden bg-white/90 backdrop-blur-md border-b border-slate-200/80 fixed top-0 inset-x-0 h-16 z-40 flex items-center justify-between px-4 shadow-[0_2px_20px_-5px_rgba(0,0,0,0.05)]">
+        <div class="flex items-center gap-3">
             <button onclick="toggleSidebarSiswa()" class="w-9 h-9 rounded-xl hover:bg-slate-100 transition flex items-center justify-center border border-slate-200/50 cursor-pointer">
                 <i class="fa-solid fa-bars text-slate-600"></i>
             </button>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-sky-400 to-blue-500 text-white flex items-center justify-center font-bold text-xs shadow-2xs">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-blue-500 text-white flex items-center justify-center font-bold text-xs shadow-2xs">
                 <i class="fa-solid fa-user-graduate text-[10px]"></i>
             </div>
         </div>
@@ -44,7 +44,7 @@
                     <span id="kelasBadge" class="text-[10px] bg-sky-50 text-sky-700 border border-sky-100 px-2 py-0.5 rounded-md font-bold shadow-2xs inline-block">Kelas: Loading...</span>
                 </div>
             </div>
-            <button onclick="toggleSidebarSiswa()" class="md:hidden text-slate-400 hover:text-slate-600 p-1">
+            <button onclick="toggleSidebarSiswa()" class="md:hidden text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
         </div>
@@ -129,7 +129,7 @@
                 </div>
             </div>
 
-           <div id="panel-Keringanan" class="menu-panel hidden space-y-4">
+            <div id="panel-Keringanan" class="menu-panel hidden space-y-4">
                 <div class="bg-white/90 backdrop-blur-xl rounded-2xl border border-slate-100 p-5 sm:p-6 shadow-sm space-y-4">
                     <div class="border-b border-slate-100 pb-3">
                         <h3 class="font-black text-slate-800 text-xs uppercase tracking-widest flex items-center gap-2">
@@ -173,6 +173,7 @@
                     </form>
                 </div>
             </div>
+
             <div id="panel-Profil" class="menu-panel hidden space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="bg-white border border-slate-200/60 rounded-2xl p-5 flex flex-col items-center text-center space-y-3 bg-white/90 backdrop-blur-md">
@@ -194,12 +195,37 @@
                         <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2 flex items-center gap-2">
                             <i class="fa-solid fa-address-card text-sky-500 text-xs"></i> Informasi Akun Resmi
                         </h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                            <div><p class="text-[9px] font-bold text-slate-400 uppercase">Nama Lengkap</p><p id="detNama" class="font-black text-slate-700">-</p></div>
-                            <div><p class="text-[9px] font-bold text-slate-400 uppercase">NISN / Username</p><p id="detUsername" class="font-mono font-bold text-slate-600 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-md inline-block shadow-3xs">-</p></div>
-                            <div><p class="text-[9px] font-bold text-slate-400 uppercase">Kelas</p><p id="detKelas" class="font-black text-slate-700">-</p></div>
-                            <div><p class="text-[9px] font-bold text-slate-400 uppercase">Hak Akses</p><p class="font-bold text-slate-700 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>Siswa Aktif</p></div>
-                        </div>
+                        <form id="formEditProfil" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                            <div>
+                                <label class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Nama Lengkap</label>
+                                <input type="text" id="editNamaLengkap" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold text-slate-400 uppercase block mb-1">NISN / Username</label>
+                                <p id="detUsername" class="font-mono font-bold text-slate-600 bg-slate-50 border border-slate-100 px-3 py-2 rounded-lg">-</p>
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Kelas</label>
+                                <p id="detKelas" class="font-black text-slate-700 bg-slate-50 border border-slate-100 px-3 py-2 rounded-lg">-</p>
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Hak Akses</label>
+                                <p class="font-bold text-slate-700 flex items-center gap-1 bg-slate-50 border border-slate-100 px-3 py-2 rounded-lg"><span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>Siswa Aktif</p>
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Password Baru (opsional)</label>
+                                <input type="password" id="editPasswordBaru" placeholder="Kosongkan jika tidak ingin ganti" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-bold text-slate-400 uppercase block mb-1">Ulangi Password Baru</label>
+                                <input type="password" id="editPasswordUlang" placeholder="Ulangi password baru" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 focus:outline-none transition">
+                            </div>
+                            <div class="sm:col-span-2 pt-2">
+                                <button type="submit" id="btnSimpanProfil" class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 rounded-xl transition shadow-xs cursor-pointer text-xs flex items-center gap-2">
+                                    <i class="fa-solid fa-floppy-disk text-[11px]"></i> Simpan Perubahan
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -249,14 +275,39 @@
             </div>
 
         </div>
-
     </main>
 
-   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwMMkeWbxGPKeroIHlhsZ636OB5htdvNsSi98A0iz8Nxw4rCNjDkwz-1l9A1muZNTH7cg/exec"; 
+    <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx6SQNHYf8s3evnvDJfIlbmE5DKIH4_k2r3dGmWqpMQBx5AsudRsq8qLqdMzBLyb0mQ8A/exec"; 
     let userLogin = null;
     let html5QrcodeInstance = null; 
     let sidebarOpen = true;
+
+    // 🕒 FUNGSI BANTU: Membersihkan nilai jam mentah dari Google Sheets.
+    // Kolom bertipe "Time" di Google Sheets selalu diserialisasi sebagai tanggal dummy 1899-12-30,
+    // jadi nilainya perlu diekstrak jadi format "HH:mm" sebelum ditampilkan.
+    function bersihkanJam(rawJam, fallback = '-') {
+        if (!rawJam) return fallback;
+        const str = String(rawJam);
+        if (str.includes('1899-') || str.includes('1900-')) {
+            const m = str.match(/T(\d{2}):(\d{2})/);
+            return m ? `${m[1]}:${m[2]}` : fallback;
+        }
+        // Kalau ternyata format tanggal penuh yang valid (bukan dummy), tampilkan jamnya saja
+        const mFull = str.match(/^\d{4}-\d{2}-\d{2}T(\d{2}):(\d{2})/);
+        if (mFull) return `${mFull[1]}:${mFull[2]}`;
+        return str;
+    }
+
+    // 📅 FUNGSI BANTU: Format tanggal ISO menjadi dd/mm/yyyy
+    function bersihkanTanggal(rawTanggal, fallback = '-') {
+        if (!rawTanggal) return fallback;
+        const str = String(rawTanggal);
+        const cleanTgl = str.substring(0, 10);
+        const split = cleanTgl.split('-');
+        if (split.length === 3 && !isNaN(split[0])) return `${split[2]}/${split[1]}/${split[0]}`;
+        return str;
+    }
 
     window.onload = function() {
         const sessionData = sessionStorage.getItem('userLogin');
@@ -268,18 +319,71 @@
             window.location.href = "index.html"; return;
         }
         
-        // Sinkronisasi Data Profil di Header & UI (Termasuk Komponen Mobile Baru)
+        // Sinkronisasi Data Profil di UI
         if (document.getElementById('namaSiswa')) document.getElementById('namaSiswa').innerText = userLogin.nama_lengkap;
         if (document.getElementById('kelasBadge')) document.getElementById('kelasBadge').innerText = "Kelas: " + userLogin.kelas;
         if (document.getElementById('kelasBadgeMobile')) document.getElementById('kelasBadgeMobile').innerText = "Kelas: " + userLogin.kelas;
         if (document.getElementById('namaProfilKiri')) document.getElementById('namaProfilKiri').innerText = userLogin.nama_lengkap;
-        if (document.getElementById('detNama')) document.getElementById('detNama').innerText = userLogin.nama_lengkap;
+        if (document.getElementById('editNamaLengkap')) document.getElementById('editNamaLengkap').value = userLogin.nama_lengkap || "";
         if (document.getElementById('detKelas')) document.getElementById('detKelas').innerText = userLogin.kelas;    
         if (document.getElementById('detUsername')) {
-            document.getElementById('detUsername').innerText = userLogin.username || userLogin.USERNAME || userLogin.NISN || "-";
+            document.getElementById('detUsername').innerText = userLogin.username || userLogin.NISN || "-";
         }
 
-        // Pemanis Event Listener: Menampilkan nama file gambar saat dipilih di HP
+        // Simpan perubahan profil (nama lengkap & password opsional)
+        const formEditProfil = document.getElementById('formEditProfil');
+        if (formEditProfil) {
+            formEditProfil.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const namaBaru = document.getElementById('editNamaLengkap').value.trim();
+                const passBaru = document.getElementById('editPasswordBaru').value;
+                const passUlang = document.getElementById('editPasswordUlang').value;
+                const btnSimpan = document.getElementById('btnSimpanProfil');
+
+                if (!namaBaru) { alert("Nama lengkap tidak boleh kosong."); return; }
+                if (passBaru || passUlang) {
+                    if (passBaru !== passUlang) { alert("Konfirmasi password baru tidak cocok."); return; }
+                    if (passBaru.length < 4) { alert("Password baru minimal 4 karakter."); return; }
+                }
+
+                const teksAsli = btnSimpan.innerHTML;
+                btnSimpan.disabled = true;
+                btnSimpan.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[11px]"></i> Menyimpan...`;
+
+                try {
+                    const resp = await fetch(WEB_APP_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify({
+                            action: 'updateProfilAkun',
+                            id_user: userLogin.id_user || userLogin.id_siswa,
+                            nama_lengkap: namaBaru,
+                            password_baru: passBaru || ""
+                        })
+                    });
+                    const hasil = await resp.json();
+                    if (hasil.status === 'success') {
+                        userLogin = { ...userLogin, ...hasil.user };
+                        sessionStorage.setItem('userLogin', JSON.stringify(userLogin));
+                        document.getElementById('namaSiswa').innerText = userLogin.nama_lengkap;
+                        document.getElementById('namaProfilKiri').innerText = userLogin.nama_lengkap;
+                        document.getElementById('editPasswordBaru').value = "";
+                        document.getElementById('editPasswordUlang').value = "";
+                        alert("✅ Profil berhasil disimpan!");
+                    } else {
+                        alert("Gagal menyimpan: " + (hasil.message || "Terjadi kesalahan"));
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Terjadi kesalahan koneksi saat menyimpan profil.");
+                } finally {
+                    btnSimpan.disabled = false;
+                    btnSimpan.innerHTML = teksAsli;
+                }
+            });
+        }
+
+        // Event Listener: Deteksi perubahan nama berkas keringanan
         const fileInputKrn = document.getElementById('buktiFotoSiswa');
         if (fileInputKrn) {
             fileInputKrn.addEventListener('change', function(e) {
@@ -292,13 +396,13 @@
         muatDataDashboardSiswa();
     };
 
-    // FIX & SOLID: Sinkronisasi menu panel navigasi responsif
+    // FUNGSI GANTI MENU & RESET STYLE PREMIUM
     async function gantiMenu(targetPanel, elemenTombol) {
         if (typeof matikanScanner === "function") {
             await matikanScanner();
         }
 
-        // Otomatis tutup sidebar jika diakses dari layar HP setelah memilih menu
+        // Otomatis tutup sidebar di HP setelah menu diklik
         const isMobile = window.innerWidth < 768;
         const sidebar = document.getElementById("sidebar");
         const overlay = document.getElementById("sidebar-overlay");
@@ -345,15 +449,13 @@
             }
         }
 
-        // RESET DAN SET STYLE AKTIF GRADASI PREMIUM
+        // Reset semua tombol menjadi status tidak aktif
         document.querySelectorAll('.menu-btn').forEach(b => {
             b.className = "menu-btn w-full text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent hover:border-slate-100 font-medium flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all text-xs cursor-pointer text-left group";
             
             const icon = b.querySelector('i');
             if (icon) {
-                icon.className = icon.className.replace(/\btext-\S+/g, '').trim(); 
                 const textMenu = b.textContent.trim();
-                
                 if (textMenu.includes("Beranda")) icon.className = "fa-solid fa-house text-sm w-4 text-center text-slate-400 group-hover:text-slate-600";
                 else if (textMenu.includes("Jadwal Evaluasi")) icon.className = "fa-solid fa-bell text-sm w-4 text-center text-rose-500";
                 else if (textMenu.includes("Modul & Pembahasan")) icon.className = "fa-solid fa-book-open text-sm w-4 text-center text-emerald-500";
@@ -364,120 +466,121 @@
             }
         });
 
+        // Berikan style gradasi premium pada tombol aktif
         if (elemenTombol) {
-            elemenTombol.className = "menu-btn w-full bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 text-white font-bold flex items-center gap-3 px-4 py-2.5 rounded-xl shadow-md shadow-sky-500/15 border border-sky-600/10 transition-all duration-200 scale-[1.01] cursor-pointer text-left";
+            elemenTombol.className = "menu-btn w-full bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 text-white font-bold flex items-center gap-3 px-3.5 py-3 rounded-xl shadow-md shadow-sky-500/15 border border-sky-600/10 transition-all duration-200 scale-[1.01] cursor-pointer text-left";
             const activeIcon = elemenTombol.querySelector('i');
             if (activeIcon) {
-                activeIcon.className = activeIcon.className.replace(/\btext-\S+/g, '').trim();
+                activeIcon.className = activeIcon.className.replace(/\btext-\S+/g, '').replace(/\bgroup-hover:text-\S+/g, '').trim();
                 activeIcon.classList.add('text-white');
             }
         }
     }
 
-    // FIX TRANSMISI PENGAJUAN KERINGANAN (ANTI TIMEOUT & BEBAS ERROR PARSING)
+    // TRANSMISI PENGAJUAN KERINGANAN (ANTI TIMEOUT & FIX LOGIC CATCH)
     const formKeringanan = document.getElementById('formKeringanan');
-    if (formKeringanan) {
-        formKeringanan.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnKirimKeringanan');
-            const fileInput = document.getElementById('buktiFotoSiswa');
-            const idAgendaInput = document.getElementById('siswaIdAgenda');
-            const alasanInput = document.getElementById('alasanSiswa');
-            
-            if (!fileInput || fileInput.files.length === 0) {
-                alert("Silakan pilih file gambar bukti terlebih dahulu!");
-                return;
-            }
+        if (formKeringanan) {
+            formKeringanan.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const btn = document.getElementById('btnKirimKeringanan');
+                const fileInput = document.getElementById('buktiFotoSiswa');
+                const idAgendaInput = document.getElementById('siswaIdAgenda');
+                const alasanInput = document.getElementById('alasanSiswa');
+                
+                if (!fileInput || fileInput.files.length === 0) {
+                    alert("Silakan pilih file gambar bukti terlebih dahulu!");
+                    return;
+                }
 
-            const file = fileInput.files[0];
-            // Pembatasan ukuran berkas kebal dari error memory crash cloud (Maks 2.5MB)
-            if (file.size > 2.5 * 1024 * 1024) {
-                alert("Ukuran file terlalu besar! Demi kelancaran unggah lewat HP, maksimal batas berkas adalah 2.5MB.");
-                return;
-            }
+                const file = fileInput.files[0];
+                if (file.size > 2.5 * 1024 * 1024) {
+                    alert("Ukuran file terlalu besar! Demi kelancaran unggah lewat HP, maksimal batas berkas adalah 2.5MB.");
+                    return;
+                }
 
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin mr-1.5"></i> Memproses berkas...`;
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin mr-1.5"></i> Memproses berkas...`;
 
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            
-            reader.onload = async function() {
-                const base64String = reader.result;
-                btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin mr-1.5"></i> Mengirim ke Cloud Server...`;
+                const reader = new FileReader();
+                
+                // 1. DAFTARKAN ONLOAD TERLEBIH DAHULU (PENTING!)
+                reader.onload = async function() {
+                    const base64String = reader.result;
+                    btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin mr-1.5"></i> Mengirim ke Cloud Server...`;
 
-                // Penyelarasan penargetan ID Siswa yang akurat dari session
-                const fixedIdSiswa = userLogin.id_siswa || userLogin.id_user || userLogin.username || "-";
-                const fixedIdAgenda = idAgendaInput ? idAgendaInput.value.trim() : "-";
+                    const fixedIdSiswa = userLogin.id_siswa || userLogin.id_user || userLogin.username || "-";
+                    const fixedIdAgenda = idAgendaInput ? idAgendaInput.value.trim() : "-";
 
-                try {
-                    const response = await fetch(WEB_APP_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain' }, // Kunci kebal CORS text-plain
-                        body: JSON.stringify({
-                            action: 'ajukanKeringanan',
-                            id_siswa: fixedIdSiswa,
-                            alasan: alasanInput.value.trim(),
-                            bukti_foto: base64String,   
-                            nama_file: file.name,
-                            id_agenda: fixedIdAgenda || "-" 
-                        })
-                    });
-                    
-                    const textResponse = await response.text();
-                    let result = {};
-                    
+                    // Kirim sebagai JSON: lebih efisien & aman untuk data base64 dibanding form-urlencoded
+                    // (karakter +, /, = pada base64 akan membengkak ukurannya kalau di-percent-encode).
+                    const payloadJson = {
+                        action: 'ajukanKeringanan',
+                        id_siswa: fixedIdSiswa,
+                        alasan: alasanInput.value.trim(),
+                        bukti_foto: base64String,
+                        nama_file: file.name,
+                        id_agenda: fixedIdAgenda || "-"
+                    };
+
                     try {
-                        result = JSON.parse(textResponse);
-                    } catch(jsonErr) {
-                        // Jika server merespons string mentah sukses tanpa JSON valid
-                        if (textResponse.includes("Sukses") || textResponse.includes("tercatat")) {
-                            result = { status: "success", message: "Sukses! Pengajuan keringanan absensi telah tercatat." };
-                        } else {
-                            result = { status: "error", message: textResponse };
-                        }
-                    }
-                    
-                    if (result.status === "success" || result.message.includes("Sukses")) {
-                        alert("✨ Pengajuan Sukses Dikirim!\n" + (result.message || "Berkas keringanan Anda berhasil didaftarkan ke sistem."));
-                        formKeringanan.reset();
-                        if(document.getElementById('namaFileTerpilih')) {
-                            document.getElementById('namaFileTerpilih').innerText = "Pilih Gambar Bukti atau Foto Kamera";
+                        const response = await fetch(WEB_APP_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain' },
+                            body: JSON.stringify(payloadJson)
+                        });
+                        
+                        const textResponse = await response.text();
+                        let result = {};
+                        
+                        try {
+                            result = JSON.parse(textResponse);
+                        } catch(jsonErr) {
+                            if (textResponse.includes("Sukses") || textResponse.includes("tercatat")) {
+                                result = { status: "success", message: "Sukses! Pengajuan keringanan absensi telah tercatat." };
+                            } else {
+                                result = { status: "error", message: textResponse };
+                            }
                         }
                         
-                        // Kembalikan ke beranda belajar
-                        const tombolBeranda = document.querySelector('.menu-btn');
-                        if (tombolBeranda) gantiMenu('Beranda', tombolBeranda);
-                        else window.location.reload();
-                    } else {
-                        alert("⚠️ Gagal memproses: " + result.message);
+                        if (result.status === "success" || (result.message && result.message.includes("Sukses"))) {
+                            alert("✨ Pengajuan Sukses Dikirim!\n" + (result.message || "Berkas keringanan Anda berhasil didaftarkan ke sistem."));
+                            formKeringanan.reset();
+                            if(document.getElementById('namaFileTerpilih')) {
+                                document.getElementById('namaFileTerpilih').innerText = "Pilih Gambar Bukti atau Foto Kamera";
+                            }
+                            
+                            const tombolBeranda = document.querySelector('.menu-btn');
+                            if (tombolBeranda) gantiMenu('Beranda', tombolBeranda);
+                        } else {
+                            alert("⚠️ Gagal memproses: " + result.message);
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        alert("⚠️ Terjadi gangguan koneksi internet atau server cloud sedang sibuk. Silakan coba beberapa saat lagi.");
+                    } finally {
+                        btn.disabled = false;
+                        btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Berkas Pengajuan`;
                     }
-                } catch (error) {
-                    console.error(error);
-                    alert("✨ Pengajuan Berhasil Diproses oleh Database System!");
-                    formKeringanan.reset();
-                    window.location.reload();
-                } finally {
+                };
+
+                // 2. DAFTARKAN ONERROR
+                reader.onerror = function() {
+                    alert("Gagal membaca file gambar pada perangkat Anda.");
                     btn.disabled = false;
                     btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Berkas Pengajuan`;
-                }
-            };
+                };
 
-            reader.onerror = function() {
-                alert("Gagal membaca file gambar pada perangkat Anda.");
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Berkas Pengajuan`;
-            };
-        });
-    }
+                // 3. JALANKAN EKSEKUSI PEMBACAAN FILE (Paling Terakhir)
+                reader.readAsDataURL(file);
+            });
+        }
 
     // LOAD DATA REALTIME DARI DATABASE GOOGLE SHEETS
-    // LOAD DATA REALTIME DARI DATABASE GOOGLE SHEETS + AUTO DROPDOWN KERINGANAN
     async function muatDataDashboardSiswa() {
         const containerUjian = document.getElementById('listUjianSiswa');
         const containerAgenda = document.getElementById('listAgendaSiswa');
         const containerRiwayat = document.getElementById('listRiwayatAbsen');
-        const dropdownAgenda = document.getElementById('siswaIdAgenda'); // Deteksi dropdown baru
+        const dropdownAgenda = document.getElementById('siswaIdAgenda');
         
         if(containerUjian) containerUjian.innerHTML = `<div class="text-center py-6 text-xs text-slate-400 font-medium italic"><i class="fa-solid fa-spinner animate-spin mr-1.5 text-rose-400"></i> Menyelaraskan info ujian...</div>`;
         if(containerAgenda) containerAgenda.innerHTML = `<div class="text-center py-6 text-xs text-slate-400 font-medium italic"><i class="fa-solid fa-spinner animate-spin mr-1.5 text-emerald-400"></i> Memuat catatan modul...</div>`;
@@ -496,22 +599,25 @@
             const result = await response.json();
             
             if (result.status === "success") {
-                
-                // === LOGIKA BARU: OTOMATIS ISI DROPDOWN KERINGANAN DENGAN MATPEL & TANGGAL ===
+                // Isi Dropdown Keringanan otomatis (hanya sesi yang BELUM berstatus Hadir yang perlu diajukan keringanan)
                 if (dropdownAgenda) {
-                    if (!result.agenda || result.agenda.length === 0) {
-                        dropdownAgenda.innerHTML = '<option value="">-- Tidak ada sesi pelajaran tersedia --</option>';
+                    const idAgendaSudahHadir = new Set(
+                        (result.riwayat_absen || [])
+                            .filter(r => r.id_agenda && r.status === 'HADIR')
+                            .map(r => r.id_agenda)
+                    );
+                    const agendaBisaDiajukan = (result.agenda || []).filter(a => !idAgendaSudahHadir.has(a.id_agenda));
+
+                    if (agendaBisaDiajukan.length === 0) {
+                        dropdownAgenda.innerHTML = '<option value="">-- Tidak ada sesi yang perlu diajukan keringanan --</option>';
                     } else {
                         dropdownAgenda.innerHTML = '<option value="" disabled selected>-- Pilih Sesi Pertemuan / Mata Pelajaran --</option>';
-                        result.agenda.forEach(a => {
-                            // Format tanggal agar ramah dibaca manusia (YYYY-MM-DD)
+                        agendaBisaDiajukan.forEach(a => {
                             const tglFormat = a.tanggal ? a.tanggal.split('T')[0] : '-';
-                            // Tampilkan Tanggal & Matpel, tapi secara rahasia sistem tetap mengirim ID Agenda aslinya
                             dropdownAgenda.innerHTML += `<option value="${a.id_agenda}">${tglFormat} - ${a.mata_pelajaran} (${a.materi || 'KBM'})</option>`;
                         });
                     }
                 }
-                // ============================================================================
 
                 // Render List Ujian
                 if (containerUjian) {
@@ -525,7 +631,7 @@
                                     <div class="space-y-0.5">
                                         <h4 class="font-bold text-xs text-slate-800 group-hover:text-rose-600 transition-colors">${u.mata_pelajaran}</h4>
                                         <p class="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
-                                            <i class="fa-regular fa-clock text-[10px]"></i> ${u.tanggal} <span class="text-slate-300">•</span> ${u.jam}
+                                            <i class="fa-regular fa-clock text-[10px]"></i> ${bersihkanTanggal(u.tanggal)} <span class="text-slate-300">•</span> ${bersihkanJam(u.jam)}
                                         </p>
                                     </div>
                                     <span class="px-2.5 py-0.5 text-[9px] font-black tracking-wide uppercase bg-rose-50 text-rose-600 border border-rose-100 rounded-md shadow-2xs">${u.jenis_ujian}</span>
@@ -601,7 +707,10 @@
         statusDiv.className = "p-3 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-[11px] font-bold font-mono animate-pulse tracking-wide";
         statusDiv.innerHTML = "Menginisialisasi Kamera Ponsel...";
 
-        html5QrcodeInstance = new Html5Qrcode("reader");
+        // PROTEKSI: Mencegah re-initialization crash pada satu element id "reader"
+        if (!html5QrcodeInstance) {
+            html5QrcodeInstance = new Html5Qrcode("reader");
+        }
 
         const config = { 
             fps: 10, 
@@ -660,11 +769,14 @@
             const result = await response.json();
             
             if (result.status === 'success') {
-                alert(result.message);
-                location.reload(); 
+                alert("✨ " + result.message);
+                // Alihkan secara smooth ke panel Riwayat Presensi tanpa reload browser kaku
+                const btnRiwayat = document.querySelector("button[onclick*='Riwayat']");
+                gantiMenu('Riwayat', btnRiwayat);
             } else {
-                alert("Gagal Absen: " + result.message);
-                location.reload(); 
+                alert("⚠️ Gagal Absen: " + result.message);
+                const btnBeranda = document.querySelector("button[onclick*='Beranda']");
+                gantiMenu('Beranda', btnBeranda);
             }
         } catch (err) {
             alert("Terjadi gangguan transmisi data ke database cloud.");
@@ -693,7 +805,7 @@
         }
     }
 
-    // TOGGLE RESPONSIVE SIDEBAR NAVIGATION (FIXED FOR DESKTOP & MOBILE RESPONSIVE)
+    // TOGGLE RESPONSIVE SIDEBAR (FIXED FOR DESKTOP & MOBILE TRANSITION EFFECT)
     function toggleSidebar() {
         const sidebar = document.getElementById("sidebar");
         const main = document.getElementById("mainContent");
@@ -711,18 +823,14 @@
                 if (overlay) overlay.classList.add("hidden");
             }
         } else {
-            if (sidebarOpen) {
-                sidebar.classList.remove("md:w-64");
-                sidebar.classList.add("w-0", "md:w-0", "overflow-hidden", "opacity-0");
-                main.classList.remove("md:pl-64");
-                main.classList.add("md:pl-0");
-            } else {
-                sidebar.classList.remove("w-0", "md:w-0", "overflow-hidden", "opacity-0");
-                sidebar.classList.add("md:w-64");
-                main.classList.remove("md:pl-0");
+            // Animasi transisi sliding di Desktop menggunakan utility class Tailwind translate yang aman
+            if (sidebar.classList.contains("md:-translate-x-full")) {
+                sidebar.classList.remove("md:-translate-x-full");
                 main.classList.add("md:pl-64");
+            } else {
+                sidebar.classList.add("md:-translate-x-full");
+                main.classList.remove("md:pl-64");
             }
-            sidebarOpen = !sidebarOpen;
         }
     }
 
