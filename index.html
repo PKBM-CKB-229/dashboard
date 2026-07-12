@@ -1,464 +1,131 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PKBM Cahaya Kahuripan Bangsa — Kesetaraan Paket A · B · C</title>
-<link rel="icon" type="image/png" href="img-logo-pkbm.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-  :root{
-    --ink:#1B2A44;
-    --ink-soft:#5C6B85;
-    --gold:#E3A73A;
-    --gold-deep:#C98A22;
-    --paper:#FAF6EC;
-    --paper-deep:#F1EAD8;
-    --moss:#33593F;
-    --moss-soft:#EAF1E7;
-    --clay:#BD4438;
-    --card:#FFFFFF;
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;
-    margin:0;
-  }
-  .font-display{font-family:'Fraunces',serif;}
-  .font-mono{font-family:'IBM Plex Mono',monospace;}
-  .eyebrow{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11px;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    color:var(--moss);
-    font-weight:500;
-  }
-  .btn-primary{
-    background:var(--ink);
-    color:var(--paper);
-    transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
-  }
-  .btn-primary:hover{ background:#101c30; transform:translateY(-1px); box-shadow:0 10px 24px -8px rgba(27,42,68,.45); }
-  .btn-ghost{
-    border:1.5px solid rgba(27,42,68,.18);
-    color:var(--ink);
-    transition:all .18s ease;
-  }
-  .btn-ghost:hover{ border-color:var(--ink); background:rgba(27,42,68,.04); }
-  .btn-gold{
-    background:var(--gold);
-    color:#2A1B04;
-    transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
-  }
-  .btn-gold:hover{ background:var(--gold-deep); transform:translateY(-1px); box-shadow:0 10px 24px -8px rgba(201,138,34,.5); }
-
-  .card-lift{ transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
-  .card-lift:hover{ transform:translateY(-4px); box-shadow:0 20px 40px -18px rgba(27,42,68,.22); border-color:rgba(27,42,68,.14); }
-
-  /* Signature hero graphic: sunrise over Lembang hills, rays echo the PKBM torch logo */
-  .sun-ray{ transform-origin:250px 210px; animation:rayrise .9s ease-out both; }
-  .sun-core{ animation:coreglow 3.2s ease-in-out infinite; transform-origin:250px 210px; }
-  .hill{ animation:hillrise 1s cubic-bezier(.2,.8,.2,1) both; }
-  @keyframes rayrise{ from{ opacity:0; transform:scaleY(.2) translateY(30px);} to{ opacity:1; transform:scaleY(1) translateY(0);} }
-  @keyframes coreglow{ 0%,100%{ filter:drop-shadow(0 0 10px rgba(227,167,58,.55)); } 50%{ filter:drop-shadow(0 0 22px rgba(227,167,58,.85)); } }
-  @keyframes hillrise{ from{ opacity:0; transform:translateY(24px);} to{ opacity:1; transform:translateY(0);} }
-  @media (prefers-reduced-motion: reduce){
-    .sun-ray, .sun-core, .hill{ animation:none !important; }
-  }
-
-  .grain{
-    background-image:radial-gradient(rgba(27,42,68,.05) 1px, transparent 1px);
-    background-size:14px 14px;
-  }
-
-  #modalMasuk, #modalInfoDaftar{ backdrop-filter:blur(6px); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk - PKBM Cahaya Kahuripan</title>
+    <link rel="icon" type="image/png" href="img-logo-pkbm.png">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="antialiased">
+<body class="bg-gradient-to-br from-slate-50 via-blue-50/40 to-slate-100 min-h-screen antialiased font-sans flex items-center justify-center p-4 relative overflow-x-hidden">
 
-  <!-- ============ NAV ============ -->
-  <header class="sticky top-0 z-40 bg-[var(--paper)]/90 backdrop-blur-md border-b border-black/[.06]">
-    <div class="max-w-6xl mx-auto px-5 sm:px-8 h-[72px] flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-white border border-black/[.06] flex items-center justify-center p-1.5 shadow-sm">
-          <img src="img-logo-pkbm.png" alt="Logo PKBM" class="w-full h-full object-contain">
-        </div>
-        <div class="leading-tight">
-          <p class="font-display font-semibold text-[15px] text-[var(--ink)]">PKBM Cahaya Kahuripan</p>
-          <p class="eyebrow !text-[9px] !text-[var(--ink-soft)]">Lembang · Bandung Barat</p>
-        </div>
-      </div>
-      <nav class="flex items-center gap-2 sm:gap-3">
-        <button onclick="bukaModalDaftar()" class="hidden sm:inline-flex btn-ghost text-xs font-bold px-4 py-2.5 rounded-xl cursor-pointer">Daftar</button>
-        <button onclick="bukaModalMasuk()" class="btn-primary text-xs font-bold px-4 sm:px-5 py-2.5 rounded-xl cursor-pointer inline-flex items-center gap-2">
-          <i class="fa-solid fa-right-to-bracket text-[11px]"></i> Masuk
-        </button>
-      </nav>
-    </div>
-  </header>
+    <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-gradient-to-tr from-sky-400/10 to-cyan-400/10 blur-3xl rounded-full pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-gradient-to-br from-emerald-400/10 to-teal-400/10 blur-3xl rounded-full pointer-events-none"></div>
 
-  <!-- ============ HERO ============ -->
-  <section class="max-w-6xl mx-auto px-5 sm:px-8 pt-14 sm:pt-20 pb-16 grid md:grid-cols-2 gap-12 items-center">
-    <div>
-      <p class="eyebrow mb-4"><i class="fa-solid fa-certificate mr-1.5"></i> Kesetaraan Paket A · B · C — Terakreditasi</p>
-      <h1 class="font-display text-[38px] sm:text-[52px] leading-[1.06] font-semibold text-[var(--ink)] tracking-tight">
-        Cahaya untuk<br> setiap warga belajar<br> yang ingin <span class="italic text-[var(--moss)]">melanjutkan</span>.
-      </h1>
-      <p class="mt-6 text-[15px] text-[var(--ink-soft)] leading-relaxed max-w-md">
-        PKBM Cahaya Kahuripan Bangsa membuka jalur pendidikan kesetaraan Paket A (Setara SD), Paket B (Setara SMP), dan Paket C (Setara SMA) di Lembang — untuk siapa pun yang sempat berhenti sekolah dan ingin melangkah lagi.
-      </p>
-      <div class="mt-8 flex flex-wrap items-center gap-3">
-        <button onclick="bukaModalMasuk()" class="btn-primary text-sm font-bold px-6 py-3.5 rounded-2xl cursor-pointer inline-flex items-center gap-2">
-          Masuk ke Akun Saya <i class="fa-solid fa-arrow-right text-xs"></i>
-        </button>
-        <a href="#kontak" class="btn-ghost text-sm font-bold px-6 py-3.5 rounded-2xl cursor-pointer inline-flex items-center gap-2">
-          Info Pendaftaran
-        </a>
-      </div>
-      <div class="mt-10 flex items-center gap-6 text-[var(--ink-soft)]">
-        <div>
-          <p class="font-display text-xl font-semibold text-[var(--ink)]">3</p>
-          <p class="text-[11px]">Program Kesetaraan</p>
-        </div>
-        <div class="w-px h-8 bg-black/10"></div>
-        <div>
-          <p class="font-display text-xl font-semibold text-[var(--ink)]">A</p>
-          <p class="text-[11px]">Akreditasi BAN-PDM</p>
-        </div>
-        <div class="w-px h-8 bg-black/10"></div>
-        <div>
-          <p class="font-display text-xl font-semibold text-[var(--ink)]">6</p>
-          <p class="text-[11px]">Hari Belajar / Minggu</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Signature illustration: gedung sekolah, buku, dan topi wisuda — tema sekolah yang langsung terbaca -->
-    <div class="relative flex items-center justify-center">
-      <svg viewBox="0 0 500 380" class="w-full max-w-[440px]" role="img" aria-label="Ilustrasi gedung sekolah PKBM dengan buku dan topi wisuda">
-        <defs>
-          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#FBF0D9"/>
-            <stop offset="55%" stop-color="#F6E2BC"/>
-            <stop offset="100%" stop-color="#EFD6A4"/>
-          </linearGradient>
-          <linearGradient id="roofGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#CE5344"/>
-            <stop offset="100%" stop-color="#AC3B2F"/>
-          </linearGradient>
-          <linearGradient id="groundGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#3B6146"/>
-            <stop offset="100%" stop-color="#2A4732"/>
-          </linearGradient>
-        </defs>
-
-        <rect x="0" y="0" width="500" height="300" rx="22" fill="url(#skyGrad)"/>
-        <g clip-path="url(#clip)">
-          <clipPath id="clip"><rect x="0" y="0" width="500" height="300" rx="22"/></clipPath>
-
-          <!-- sun rays, backdrop accent tying back to logo -->
-          <g opacity="0.9">
-            <circle class="sun-core" cx="250" cy="120" r="34" fill="#E3A73A" opacity="0.55"/>
-            <g fill="#E3A73A" opacity="0.5">
-              <rect class="sun-ray" style="animation-delay:.05s" x="246" y="34" width="7" height="34" rx="3"/>
-              <rect class="sun-ray" style="animation-delay:.1s" x="188" y="46" width="7" height="30" rx="3" transform="rotate(-32 191 60)"/>
-              <rect class="sun-ray" style="animation-delay:.15s" x="304" y="46" width="7" height="30" rx="3" transform="rotate(32 307 60)"/>
-            </g>
-          </g>
-
-          <!-- ground -->
-          <path class="hill" style="animation-delay:.2s" d="M0 272 C90 258 150 278 240 268 C330 258 380 274 500 262 L500 300 L0 300 Z" fill="url(#groundGrad)"/>
-
-          <!-- SEKOLAH: gedung utama -->
-          <g class="hill" style="animation-delay:.05s">
-            <!-- badan bangunan -->
-            <rect x="165" y="150" width="170" height="112" rx="6" fill="#FFFDF7" stroke="#1B2A44" stroke-width="4"/>
-            <!-- atap segitiga -->
-            <path d="M150 152 L250 92 L350 152 Z" fill="url(#roofGrad)" stroke="#1B2A44" stroke-width="4" stroke-linejoin="round"/>
-            <!-- tiang bendera -->
-            <path d="M250 92 L250 56" stroke="#1B2A44" stroke-width="4" stroke-linecap="round"/>
-            <path d="M250 56 C262 59 270 65 280 68 C270 71 262 74 250 76 Z" fill="#BD4438"/>
-            <!-- pintu -->
-            <path d="M232 262 L232 206 C232 194 268 194 268 206 L268 262 Z" fill="#1B2A44"/>
-            <circle cx="261" cy="234" r="3" fill="#E3A73A"/>
-            <!-- jendela kiri -->
-            <rect x="184" y="176" width="34" height="34" rx="3" fill="#EAF1E7" stroke="#1B2A44" stroke-width="3.5"/>
-            <path d="M201 176 L201 210 M184 193 L218 193" stroke="#1B2A44" stroke-width="3"/>
-            <!-- jendela kanan -->
-            <rect x="282" y="176" width="34" height="34" rx="3" fill="#EAF1E7" stroke="#1B2A44" stroke-width="3.5"/>
-            <path d="M299 176 L299 210 M282 193 L316 193" stroke="#1B2A44" stroke-width="3"/>
-            <!-- papan nama -->
-            <rect x="205" y="222" width="0" height="0"/>
-          </g>
-
-          <!-- Buku terbuka + pensil, di depan gedung -->
-          <g class="hill" style="animation-delay:.3s" transform="translate(0,4)">
-            <path d="M105 268 L200 254 L200 292 L105 306 Z" fill="#FFFDF7" stroke="#1B2A44" stroke-width="3.5" stroke-linejoin="round"/>
-            <path d="M200 254 L295 268 L295 306 L200 292 Z" fill="#F3EEE0" stroke="#1B2A44" stroke-width="3.5" stroke-linejoin="round"/>
-            <path d="M118 265 L186 255 M118 276 L186 266 M118 287 L186 277" stroke="#B7C4CE" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M214 258 L282 268 M214 269 L282 279 M214 280 L282 290" stroke="#B7C4CE" stroke-width="2.5" stroke-linecap="round"/>
-            <!-- pensil -->
-            <g transform="rotate(-11 230 250)">
-              <rect x="150" y="242" width="130" height="14" rx="4" fill="#E3A73A" stroke="#1B2A44" stroke-width="3"/>
-              <path d="M150 242 L136 249 L150 256 Z" fill="#FFDFA6" stroke="#1B2A44" stroke-width="3" stroke-linejoin="round"/>
-              <rect x="266" y="242" width="16" height="14" fill="#EAF1E7" stroke="#1B2A44" stroke-width="3"/>
-            </g>
-          </g>
-
-          <!-- Topi wisuda melayang -->
-          <g class="hill" style="animation-delay:.45s" transform="translate(345,150)">
-            <path d="M0 8 L46 -8 L92 8 L46 24 Z" fill="#1B2A44"/>
-            <rect x="34" y="8" width="24" height="16" fill="#1B2A44"/>
-            <circle cx="46" cy="8" r="5" fill="#E3A73A"/>
-            <path d="M46 8 C50 22 44 30 40 40" stroke="#E3A73A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            <circle cx="39" cy="41" r="4" fill="#E3A73A"/>
-          </g>
-        </g>
-      </svg>
-      <div class="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-lg border border-black/[.06] px-5 py-3 flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-[var(--moss-soft)] flex items-center justify-center text-[var(--moss)]">
-          <i class="fa-solid fa-school text-xs"></i>
-        </div>
-        <div class="leading-tight">
-          <p class="text-[12px] font-bold text-[var(--ink)]">Cahaya Kahuripan Bangsa</p>
-          <p class="text-[10px] text-[var(--ink-soft)]">"Cahaya untuk kehidupan bangsa"</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PROGRAM ============ -->
-  <section class="max-w-6xl mx-auto px-5 sm:px-8 py-16 sm:py-20">
-    <p class="eyebrow mb-3">Program Kesetaraan</p>
-    <h2 class="font-display text-3xl sm:text-4xl font-semibold text-[var(--ink)] max-w-xl">Tiga jenjang, satu tujuan: ijazah yang diakui negara.</h2>
-
-    <div class="grid sm:grid-cols-3 gap-5 mt-10">
-      <div class="card-lift bg-[var(--card)] rounded-2xl p-6 border border-black/[.06]">
-        <div class="w-11 h-11 rounded-xl bg-[var(--moss-soft)] flex items-center justify-center text-[var(--moss)] mb-5">
-          <i class="fa-solid fa-child text-base"></i>
-        </div>
-        <p class="font-mono text-[10px] tracking-widest text-[var(--moss)] font-semibold mb-1">PAKET A</p>
-        <h3 class="font-display text-xl font-semibold text-[var(--ink)] mb-2">Setara SD</h3>
-        <p class="text-[13px] text-[var(--ink-soft)] leading-relaxed">Untuk warga belajar usia sekolah dasar maupun dewasa yang ingin menuntaskan pendidikan dasar mereka.</p>
-      </div>
-      <div class="card-lift bg-[var(--card)] rounded-2xl p-6 border border-black/[.06]">
-        <div class="w-11 h-11 rounded-xl bg-[var(--moss-soft)] flex items-center justify-center text-[var(--moss)] mb-5">
-          <i class="fa-solid fa-book-open-reader text-base"></i>
-        </div>
-        <p class="font-mono text-[10px] tracking-widest text-[var(--moss)] font-semibold mb-1">PAKET B</p>
-        <h3 class="font-display text-xl font-semibold text-[var(--ink)] mb-2">Setara SMP</h3>
-        <p class="text-[13px] text-[var(--ink-soft)] leading-relaxed">Tersedia kelas tatap muka maupun daring (online), fleksibel bagi warga belajar yang juga bekerja.</p>
-      </div>
-      <div class="card-lift bg-[var(--card)] rounded-2xl p-6 border border-black/[.06]">
-        <div class="w-11 h-11 rounded-xl bg-[var(--moss-soft)] flex items-center justify-center text-[var(--moss)] mb-5">
-          <i class="fa-solid fa-graduation-cap text-base"></i>
-        </div>
-        <p class="font-mono text-[10px] tracking-widest text-[var(--moss)] font-semibold mb-1">PAKET C</p>
-        <h3 class="font-display text-xl font-semibold text-[var(--ink)] mb-2">Setara SMA</h3>
-        <p class="text-[13px] text-[var(--ink-soft)] leading-relaxed">Kelas reguler dan daring, membekali warga belajar dengan ijazah setara SMA untuk melanjutkan kuliah atau bekerja.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ TRUST STRIP ============ -->
-  <section class="border-y border-black/[.06] bg-[var(--paper-deep)]/60">
-    <div class="max-w-6xl mx-auto px-5 sm:px-8 py-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-[var(--ink-soft)]">
-      <div class="flex items-center gap-2 text-[13px] font-semibold">
-        <i class="fa-solid fa-shield-halved text-[var(--moss)]"></i> Terakreditasi resmi
-      </div>
-      <div class="flex items-center gap-2 text-[13px] font-semibold">
-        <i class="fa-solid fa-landmark text-[var(--moss)]"></i> Izin Disdikpora Kab. Bandung Barat
-      </div>
-      <div class="flex items-center gap-2 text-[13px] font-semibold">
-        <i class="fa-solid fa-users-line text-[var(--moss)]"></i> Guru berpengalaman
-      </div>
-      <div class="flex items-center gap-2 text-[13px] font-semibold">
-        <i class="fa-solid fa-laptop text-[var(--moss)]"></i> Kelas Tatap Muka & Online
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ KONTAK / FOOTER ============ -->
-  <section id="kontak" class="max-w-6xl mx-auto px-5 sm:px-8 py-16 sm:py-20 grid md:grid-cols-2 gap-10">
-    <div>
-      <p class="eyebrow mb-3">Ingin Bergabung?</p>
-      <h2 class="font-display text-3xl font-semibold text-[var(--ink)] mb-4">Pendaftaran mandiri online untuk sementara ditutup.</h2>
-      <p class="text-[14px] text-[var(--ink-soft)] leading-relaxed max-w-md mb-6">
-        Silakan datang langsung ke sekretariat kami untuk konsultasi program dan proses pendaftaran warga belajar baru — tim kami akan membantu menentukan jenjang yang tepat untuk kamu.
-      </p>
-      <div class="space-y-3 text-[13px]">
-        <div class="flex items-start gap-3">
-          <i class="fa-solid fa-location-dot text-[var(--moss)] mt-0.5"></i>
-          <span class="text-[var(--ink)]">Jl. Maribaya No.1 Ruko Central Lembang Blok B-6, Lembang, Kabupaten Bandung Barat 40391</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <i class="fa-solid fa-phone text-[var(--moss)]"></i>
-          <span class="text-[var(--ink)]">2786466</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <i class="fa-solid fa-envelope text-[var(--moss)]"></i>
-          <span class="text-[var(--ink)]">pkbmckb.org</span>
-        </div>
-      </div>
-    </div>
-    <div class="bg-[var(--ink)] rounded-3xl p-8 sm:p-10 text-[var(--paper)] flex flex-col justify-center">
-      <p class="eyebrow !text-[var(--gold)] mb-3">Sudah Terdaftar?</p>
-      <h3 class="font-display text-2xl font-semibold mb-3">Masuk untuk lihat jadwal, absensi, dan nilai kamu.</h3>
-      <p class="text-[13px] text-white/70 mb-6">Untuk warga belajar, guru, maupun pengawas PKBM yang sudah memiliki akun resmi.</p>
-      <button onclick="bukaModalMasuk()" class="btn-gold w-full sm:w-fit text-sm font-bold px-6 py-3.5 rounded-2xl cursor-pointer inline-flex items-center justify-center gap-2">
-        Masuk ke Akun Saya <i class="fa-solid fa-arrow-right text-xs"></i>
-      </button>
-    </div>
-  </section>
-
-  <footer class="border-t border-black/[.06] py-8">
-    <div class="max-w-6xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-[var(--ink-soft)]">
-      <p>© 2026 PKBM Cahaya Kahuripan Bangsa · Lembang, Kabupaten Bandung Barat</p>
-      <p>Izin Disdikpora Kab. Bandung Barat No. 421/047.17disdikpora/2017</p>
-    </div>
-  </footer>
-
-  <!-- ============ MODAL: MASUK (login form asli, fungsinya tidak diubah) ============ -->
-  <div id="modalMasuk" class="hidden fixed inset-0 bg-[var(--ink)]/40 z-50 flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-white rounded-[2.5rem] p-8 sm:p-10 shadow-2xl relative">
-      <button onclick="tutupModalMasuk()" class="absolute top-6 right-6 text-[var(--ink-soft)] hover:text-[var(--ink)] cursor-pointer">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-
-      <div class="flex flex-col items-center text-center space-y-4 mb-8">
-        <div class="w-16 h-16 bg-white border border-slate-150 rounded-2xl flex items-center justify-center p-2.5 shadow-md shadow-slate-100/50">
-          <img src="img-logo-pkbm.png" alt="Logo PKBM" class="w-full h-full object-contain">
-        </div>
-        <div class="space-y-1">
-          <h1 class="text-xl font-black text-slate-800 tracking-tight font-display">
-            PKBM Cahaya <span class="bg-clip-text text-transparent bg-gradient-to-r from-[var(--moss)] to-[var(--ink)]">Kahuripan</span>
-          </h1>
-          <p class="text-xs text-slate-400 font-medium">Silakan masuk menggunakan akun resmi Anda</p>
-        </div>
-      </div>
-
-      <form id="formLogin" class="space-y-5">
-        <div class="space-y-1.5">
-          <label for="username" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider pl-1">Username / NISN</label>
-          <div class="relative group">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[var(--moss)] transition-colors">
-              <i class="fa-solid fa-user text-sm"></i>
+    <div class="w-full max-w-md bg-white/95 backdrop-blur-xl border border-white rounded-[2.5rem] p-8 sm:p-10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.06)] relative z-10 transition-all duration-300 hover:shadow-[0_30px_60px_-10px_rgba(14,165,233,0.1)]">
+        
+        <div class="flex flex-col items-center text-center space-y-4 mb-8">
+            <div class="w-16 h-16 bg-white border border-slate-150 rounded-2xl flex items-center justify-center p-2.5 shadow-md shadow-slate-100/50">
+                <img src="img-logo-pkbm.png" alt="Logo PKBM" class="w-full h-full object-contain">
             </div>
-            <input type="text" id="username" required autocomplete="username"
-              class="w-full pl-11 pr-4 py-3.5 bg-slate-50/80 border border-slate-200/80 rounded-2xl text-xs font-semibold text-slate-800 placeholder-slate-400 focus:bg-white focus:border-[var(--moss)] focus:ring-4 focus:ring-[var(--moss)]/10 focus:outline-none transition-all shadow-inner"
-              placeholder="Masukkan username atau NISN">
-          </div>
+            <div class="space-y-1">
+                <h1 class="text-xl font-black text-slate-800 tracking-tight">
+                    PKBM Cahaya <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-blue-600">Kahuripan</span>
+                </h1>
+                <p class="text-xs text-slate-400 font-medium">Silakan masuk menggunakan akun resmi Anda</p>
+            </div>
         </div>
 
-        <div class="space-y-1.5">
-          <label for="password" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider pl-1">KATA SANDI</label>
-          <div class="relative group">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[var(--moss)] transition-colors">
-              <i class="fa-solid fa-lock text-sm"></i>
+        <form id="formLogin" class="space-y-5">
+            <div class="space-y-1.5">
+                <label for="username" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider pl-1">Username / NISN</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-sky-500 transition-colors">
+                        <i class="fa-solid fa-user text-sm"></i>
+                    </div>
+                    <input type="text" id="username" required autocomplete="username"
+                        class="w-full pl-11 pr-4 py-3.5 bg-slate-50/80 border border-slate-200/80 rounded-2xl text-xs font-semibold text-slate-800 placeholder-slate-400 focus:bg-white focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 focus:outline-none transition-all shadow-inner" 
+                        placeholder="Masukkan username atau NISN">
+                </div>
             </div>
-            <input type="password" id="password" required autocomplete="current-password"
-              class="w-full pl-11 pr-12 py-3.5 bg-slate-50/80 border border-slate-200/80 rounded-2xl text-xs font-semibold text-slate-800 placeholder-slate-400 focus:bg-white focus:border-[var(--moss)] focus:ring-4 focus:ring-[var(--moss)]/10 focus:outline-none transition-all shadow-inner"
-              placeholder="••••••••">
-            <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer transition-colors focus:outline-none">
-              <i id="eyeIcon" class="fa-solid fa-eye text-xs"></i>
+
+            <div class="space-y-1.5">
+                <label for="password" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider pl-1">KATA SANDI</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-sky-500 transition-colors">
+                        <i class="fa-solid fa-lock text-sm"></i>
+                    </div>
+                    <input type="password" id="password" required autocomplete="current-password"
+                        class="w-full pl-11 pr-12 py-3.5 bg-slate-50/80 border border-slate-200/80 rounded-2xl text-xs font-semibold text-slate-800 placeholder-slate-400 focus:bg-white focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 focus:outline-none transition-all shadow-inner" 
+                        placeholder="••••••••">
+                    <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer transition-colors focus:outline-none">
+                        <i id="eyeIcon" class="fa-solid fa-eye text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" id="btnLogin" class="w-full mt-2 relative overflow-hidden group/btn bg-gradient-to-r from-sky-500 via-sky-600 to-emerald-500 text-white font-bold py-3.5 rounded-2xl transition-all duration-300 shadow-[0_4px_20px_rgba(14,165,233,0.25)] hover:shadow-[0_4px_25px_rgba(14,165,233,0.4)] hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-xs tracking-wide flex items-center justify-center gap-2">
+                <span class="absolute inset-0 w-full h-full bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></span>
+                <i class="fa-solid fa-right-to-bracket text-[11px] transition-transform group-hover/btn:translate-x-0.5"></i> Autentikasi Akun
             </button>
-          </div>
+        </form>
+
+        <div class="mt-8 text-center border-t border-slate-100 pt-5">
+            <p class="text-xs text-slate-400 font-medium">
+                Warga belajar baru? <a href="#" onclick="alert('Pendaftaran online mandiri sedang ditutup. Silakan datang langsung ke sekretariat PKBM.')" class="font-bold text-sky-600 hover:text-sky-700 transition-colors underline decoration-sky-500/30 underline-offset-2">Daftar Akun Di Sini</a>
+            </p>
         </div>
-
-        <button type="submit" id="btnLogin" class="w-full mt-2 btn-primary font-bold py-3.5 rounded-2xl cursor-pointer text-xs tracking-wide flex items-center justify-center gap-2">
-          <i class="fa-solid fa-right-to-bracket text-[11px]"></i> Autentikasi Akun
-        </button>
-      </form>
-
-      <div class="mt-8 text-center border-t border-slate-100 pt-5">
-        <p class="text-xs text-slate-400 font-medium">
-          Warga belajar baru? <a href="#" onclick="tutupModalMasuk(); bukaModalDaftar(); return false;" class="font-bold text-[var(--moss)] hover:opacity-80 transition-colors underline decoration-[var(--moss)]/30 underline-offset-2">Daftar Akun Di Sini</a>
-        </p>
-      </div>
     </div>
-  </div>
 
-  <!-- ============ MODAL: INFO DAFTAR ============ -->
-  <div id="modalInfoDaftar" class="hidden fixed inset-0 bg-[var(--ink)]/40 z-50 flex items-center justify-center p-4">
-    <div class="w-full max-w-sm bg-white rounded-[2rem] p-8 shadow-2xl text-center relative">
-      <button onclick="tutupModalDaftar()" class="absolute top-5 right-5 text-[var(--ink-soft)] hover:text-[var(--ink)] cursor-pointer">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <div class="w-14 h-14 rounded-2xl bg-[var(--moss-soft)] text-[var(--moss)] flex items-center justify-center mx-auto mb-5">
-        <i class="fa-solid fa-door-open text-xl"></i>
-      </div>
-      <h3 class="font-display text-xl font-semibold text-[var(--ink)] mb-2">Pendaftaran online sedang ditutup</h3>
-      <p class="text-[13px] text-[var(--ink-soft)] leading-relaxed mb-6">Silakan datang langsung ke sekretariat PKBM di Jl. Maribaya No.1 Ruko Central Lembang Blok B-6, atau hubungi kami di 2786466.</p>
-      <button onclick="tutupModalDaftar()" class="btn-primary w-full font-bold py-3 rounded-xl text-xs cursor-pointer">Mengerti</button>
-    </div>
-  </div>
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyGlU37Wc71nhfjEEWQzvCzMHLCt-dJq1SXe7znPdT_43GclShH5KoXuI-c0VVVjwOP6A/exec";
 
-<script>
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyGlU37Wc71nhfjEEWQzvCzMHLCt-dJq1SXe7znPdT_43GclShH5KoXuI-c0VVVjwOP6A/exec";
+        // FUNCTION TOGGLE SECURITY PASSWORD VISIBILITY
+        document.addEventListener("DOMContentLoaded", function () {
+            const passwordInput = document.getElementById("password");
+            const togglePassword = document.getElementById("togglePassword");
+            const eyeIcon = document.getElementById("eyeIcon");
 
-  function bukaModalMasuk(){ document.getElementById('modalMasuk').classList.remove('hidden'); }
-  function tutupModalMasuk(){ document.getElementById('modalMasuk').classList.add('hidden'); }
-  function bukaModalDaftar(){ document.getElementById('modalInfoDaftar').classList.remove('hidden'); }
-  function tutupModalDaftar(){ document.getElementById('modalInfoDaftar').classList.add('hidden'); }
+            if (togglePassword && passwordInput && eyeIcon) {
+                togglePassword.addEventListener("click", function () {
+                    const isPassword = passwordInput.getAttribute("type") === "password";
+                    passwordInput.setAttribute("type", isPassword ? "text" : "password");
+                    
+                    if (isPassword) {
+                        eyeIcon.classList.remove("fa-eye");
+                        eyeIcon.classList.add("fa-eye-slash");
+                    } else {
+                        eyeIcon.classList.remove("fa-eye-slash");
+                        eyeIcon.classList.add("fa-eye");
+                    }
+                });
+            }
+        });
 
-  document.addEventListener("DOMContentLoaded", function () {
-    const passwordInput = document.getElementById("password");
-    const togglePassword = document.getElementById("togglePassword");
-    const eyeIcon = document.getElementById("eyeIcon");
+        // AJAX LIVE SUBMIT ACTION LOGIN
+        document.getElementById('formLogin').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnLogin');
+            btn.disabled = true; 
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Memeriksa...`;
 
-    if (togglePassword && passwordInput && eyeIcon) {
-      togglePassword.addEventListener("click", function () {
-        const isPassword = passwordInput.getAttribute("type") === "password";
-        passwordInput.setAttribute("type", isPassword ? "text" : "password");
-        if (isPassword) {
-          eyeIcon.classList.remove("fa-eye"); eyeIcon.classList.add("fa-eye-slash");
-        } else {
-          eyeIcon.classList.remove("fa-eye-slash"); eyeIcon.classList.add("fa-eye");
-        }
-      });
-    }
-  });
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'login',
+                        username: document.getElementById('username').value,
+                        password: document.getElementById('password').value
+                    })
+                });
+                const result = await response.json();
 
-  // AJAX LIVE SUBMIT ACTION LOGIN (logika asli dipertahankan persis)
-  document.getElementById('formLogin').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('btnLogin');
-    btn.disabled = true;
-    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Memeriksa...`;
-
-    try {
-      const response = await fetch(WEB_APP_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'login',
-          username: document.getElementById('username').value,
-          password: document.getElementById('password').value
-        })
-      });
-      const result = await response.json();
-
-      if (result.status === "success") {
-        sessionStorage.setItem('userLogin', JSON.stringify(result.user));
-        if (result.user.role === "admin") window.location.href = "dashboard-admin.html";
-        else if (result.user.role === "guru") window.location.href = "dashboard-guru.html";
-        else if (result.user.role === "siswa") window.location.href = "dashboard-siswa.html";
-      } else {
-        alert(result.message);
-      }
-    } catch (error) {
-      alert("Gagal terhubung dengan server database.");
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = `<i class="fa-solid fa-right-to-bracket mr-1.5"></i> Autentikasi Akun`;
-    }
-  });
-</script>
+                if (result.status === "success") {
+                    sessionStorage.setItem('userLogin', JSON.stringify(result.user));
+                    if (result.user.role === "admin") window.location.href = "dashboard-admin.html";
+                    else if (result.user.role === "guru") window.location.href = "dashboard-guru.html";
+                    else if (result.user.role === "siswa") window.location.href = "dashboard-siswa.html";
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) { 
+                alert("Gagal terhubung dengan server database."); 
+            } finally { 
+                btn.disabled = false; 
+                btn.innerHTML = `<i class="fa-solid fa-right-to-bracket mr-1.5"></i> Autentikasi Akun`; 
+            }
+        });
+    </script>
 </body>
 </html>
