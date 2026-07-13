@@ -474,9 +474,7 @@
         
         // Proteksi Halaman Admin
         if (!userLogin || userLogin.role !== "admin") {
-            alert("Akses ditolak! Halaman ini khusus untuk Pengawas/Admin.");
-            window.location.href = "index.html#login"; 
-            return;
+            notifGagal("Akses ditolak! Halaman ini khusus untuk Pengawas/Admin.", () => window.location.href = "index.html#login"); return;
         }
         
         // Tampilkan Nama Admin di UI
@@ -579,7 +577,7 @@
 
             if (hasil.status !== 'success') {
                 if (previewBody) previewBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-rose-500 font-semibold">Gagal memuat: ${hasil.message || 'Terjadi kesalahan'}</td></tr>`;
-                tampilkanNotifikasi("Gagal mengambil data jadwal: " + (hasil.message || ""), "error");
+                notifGagal("Gagal mengambil data jadwal: " + (hasil.message || ""));
                 return;
             }
 
@@ -605,7 +603,7 @@
         } catch (error) {
             console.error("Kesalahan jaringan (jadwal):", error);
             if (previewBody) previewBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-rose-500 font-semibold">Gagal memuat data dari server.</td></tr>`;
-            tampilkanNotifikasi("Terjadi kesalahan koneksi database.", "error");
+            notifGagal("Terjadi kesalahan koneksi database.");
         }
     }
 
@@ -661,7 +659,7 @@
 
     function bukaCetakJadwal() {
         if (cacheJadwalAdmin.length === 0) {
-            tampilkanNotifikasi("Data jadwal belum siap, silakan tunggu sebentar.", "info");
+            notifInfo("Data jadwal belum siap, silakan tunggu sebentar.");
             return;
         }
 
@@ -674,7 +672,7 @@
 
         if (modeCetakJadwalAktif === 'guru') {
             nilaiFilter = document.getElementById('pilihGuruCetak').value;
-            if (!nilaiFilter) { tampilkanNotifikasi("Pilih nama guru terlebih dahulu.", "info"); return; }
+            if (!nilaiFilter) { notifInfo("Pilih nama guru terlebih dahulu."); return; }
             dataTercetak = cacheJadwalAdmin.filter(j => j.nama_guru === nilaiFilter);
             judulDokumen = "JADWAL MENGAJAR GURU";
             subInfoDokumen = `Nama Guru: ${nilaiFilter}`;
@@ -685,7 +683,7 @@
                 <th class="border border-black p-2 bg-red-600 text-white">Mata Pelajaran</th>`;
         } else {
             nilaiFilter = document.getElementById('pilihKelasCetak').value;
-            if (!nilaiFilter) { tampilkanNotifikasi("Pilih kelas terlebih dahulu.", "info"); return; }
+            if (!nilaiFilter) { notifInfo("Pilih kelas terlebih dahulu."); return; }
             dataTercetak = cacheJadwalAdmin.filter(j => j.kelas === nilaiFilter);
             judulDokumen = "JADWAL PELAJARAN";
             subInfoDokumen = `Kelas: ${nilaiFilter}`;
@@ -697,7 +695,7 @@
         }
 
         if (dataTercetak.length === 0) {
-            tampilkanNotifikasi("Tidak ada jadwal untuk pilihan ini.", "info");
+            notifInfo("Tidak ada jadwal untuk pilihan ini.");
             return;
         }
 
@@ -827,23 +825,24 @@
         }
     }
 
-    async function hapusUserAdminAksi(idUser, namaUser) {
-        if (!confirm(`Yakin ingin menghapus akun "${namaUser}"? Tindakan ini tidak bisa dibatalkan.`)) return;
-        try {
-            const resp = await fetch(WEB_APP_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'hapusUserAdmin', id_user: idUser })
-            });
-            const hasil = await resp.json();
-            if (hasil.status === 'success') {
-                tampilkanNotifikasi("Akun berhasil dihapus.", "success");
-                muatDaftarUserAdmin();
-            } else {
-                tampilkanNotifikasi("Gagal menghapus: " + (hasil.message || ''), "error");
+    function hapusUserAdminAksi(idUser, namaUser) {
+        konfirmAksi(`Yakin ingin menghapus akun "${namaUser}"? Tindakan ini tidak bisa dibatalkan.`, async () => {
+            try {
+                const resp = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'hapusUserAdmin', id_user: idUser })
+                });
+                const hasil = await resp.json();
+                if (hasil.status === 'success') {
+                    notifSukses("Akun berhasil dihapus.");
+                    muatDaftarUserAdmin();
+                } else {
+                    notifGagal("Gagal menghapus: " + (hasil.message || ''));
+                }
+            } catch (error) {
+                notifGagal("Terjadi kesalahan koneksi database.");
             }
-        } catch (error) {
-            tampilkanNotifikasi("Terjadi kesalahan koneksi database.", "error");
-        }
+        });
     }
 
     const formRegisterAkunAdmin = document.getElementById('formRegisterAkunAdmin');
@@ -869,16 +868,16 @@
                 });
                 const hasil = await resp.json();
                 if (hasil.status === 'success') {
-                    tampilkanNotifikasi(hasil.message, "success");
+                    notifSukses(hasil.message);
                     formRegisterAkunAdmin.reset();
                     pilihRoleRegister('siswa');
                     muatDaftarUserAdmin();
                 } else {
-                    tampilkanNotifikasi(hasil.message || "Gagal mendaftarkan akun.", "error");
+                    notifGagal(hasil.message || "Gagal mendaftarkan akun.");
                 }
             } catch (error) {
                 console.error(error);
-                tampilkanNotifikasi("Terjadi kesalahan koneksi database.", "error");
+                notifGagal("Terjadi kesalahan koneksi database.");
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = teksAsli;
@@ -968,7 +967,7 @@
             } else {
                 cacheJurnalGuruAdmin = [];
                 renderTabelGrupGuru();
-                tampilkanNotifikasi("Gagal mengambil data: " + hasil.message, "error");
+                notifGagal("Gagal mengambil data: " + hasil.message);
             }
         } catch (error) {
             console.error("Kesalahan jaringan:", error);
@@ -984,7 +983,7 @@
                         </button>
                     </div>`;
             }
-            tampilkanNotifikasi("Terjadi kesalahan koneksi database.", "error");
+            notifGagal("Terjadi kesalahan koneksi database.");
         }
     }
 
@@ -1175,7 +1174,7 @@
         const materiBaru = document.getElementById('editMateri').value;
         const keteranganBaru = document.getElementById('editKeterangan').value;
 
-        if (!idAgenda) return alert("ID Agenda tidak ditemukan!");
+        if (!idAgenda) return notifGagal("ID Agenda tidak ditemukan!");
 
         try {
             // Tampilkan loading panel pembantu jika ada
@@ -1187,16 +1186,16 @@
             const hasil = await respon.json();
 
             if (hasil.status === 'sukses') {
-                alert("Berhasil memperbarui data jurnal!");
+                notifSukses("Berhasil memperbarui data jurnal!");
                 document.getElementById('modalEditJurnalAdmin').classList.add('hidden');
                 muatJurnalGuru(); // Memuat ulang data dari database
             } else {
-                alert("Gagal: " + hasil.pesan);
+                notifGagal("Gagal: " + hasil.pesan);
             }
             if(constbtn) constbtn.innerHTML = tksAwal;
         } catch (err) {
             console.error(err);
-            alert("Terjadi kesalahan jaringan saat menyimpan data.");
+            notifGagal("Terjadi kesalahan jaringan saat menyimpan data.");
         }
     }
     // 5. PROSES DAFTARKAN JADWAL PELAJARAN BARU
@@ -1226,13 +1225,13 @@
                 });
                 const result = await response.json();
                 if (result.status === "success") {
-                    alert(result.message);
+                    notifSukses(result.message);
                     formJadwal.reset();
                 } else {
-                    alert("Gagal: " + result.message);
+                    notifGagal("Gagal: " + result.message);
                 }
             } catch (error) { 
-                alert("Terjadi gangguan saat menghubungkan ke server cloud."); 
+                notifGagal("Terjadi gangguan saat menghubungkan ke server cloud."); 
             } finally { 
                 btn.disabled = false; 
                 btn.innerHTML = `<i class="fa-solid fa-folder-plus text-xs"></i> Daftarkan Jadwal Baru`; 
@@ -1249,7 +1248,7 @@
             if (!btn) return;
             
             const jenisUjianRadio = document.querySelector('input[name="jenis_ujian"]:checked');
-            if (!jenisUjianRadio) { alert("Pilih jenis ujian terlebih dahulu!"); return; }
+            if (!jenisUjianRadio) { notifGagal("Pilih jenis ujian terlebih dahulu!"); return; }
             
             btn.disabled = true; 
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Memproses...`;
@@ -1269,13 +1268,13 @@
                 });
                 const result = await response.json();
                 if (result.status === "success") {
-                    alert(result.message);
+                    notifSukses(result.message);
                     formUjian.reset();
                 } else {
-                    alert("Gagal: " + result.message);
+                    notifGagal("Gagal: " + result.message);
                 }
             } catch (error) { 
-                alert("Gagal merilis jadwal ujian. Periksa koneksi internet."); 
+                notifGagal("Gagal merilis jadwal ujian. Periksa koneksi internet."); 
             } finally { 
                 btn.disabled = false; 
                 btn.innerHTML = `<i class="fa-solid fa-paper-plane text-xs"></i> Terbitkan Jadwal Resmi`; 
@@ -1329,7 +1328,7 @@
                         </div>`;
                     } else if (urlBukti && urlBukti.indexOf("Gagal upload") === 0) {
                         const pesanErrorAman = urlBukti.replace(/'/g, "\\'").replace(/\n/g, ' ');
-                        buktiHTML = `<span class="text-rose-500 italic text-[11px] cursor-pointer underline decoration-dotted" onclick="alert('Detail error upload:\\n\\n${pesanErrorAman}')" title="Klik untuk lihat detail error lengkap"><i class="fa-solid fa-triangle-exclamation"></i> Upload gagal (klik detail)</span>`;
+                        buktiHTML = `<span class="text-rose-500 italic text-[11px] cursor-pointer underline decoration-dotted" onclick="notifGagal('Detail error upload:\\n\\n${pesanErrorAman}')" title="Klik untuk lihat detail error lengkap"><i class="fa-solid fa-triangle-exclamation"></i> Upload gagal (klik detail)</span>`;
                     }
 
                     let row = `
@@ -1373,38 +1372,38 @@
     }
 
     // 🛠️ FUNGSI EKSEKUSI TOMBOL SETUJUI (Taruh di bawah fungsi muatDataKeringanan)
-    async function eksekusiSetujuiPengajuan(idKeringanan, nisn, jumlahAbsen) {
-        if (!idKeringanan || !nisn) return alert("⚠️ Data pengajuan tidak lengkap (ID atau NISN kosong).");
-        if (!confirm(`Apakah Anda yakin menyetujui berkas ini? Absen siswa dengan NISN ${nisn} akan otomatis ditambahkan sebanyak ${jumlahAbsen} sesi.`)) return;
+    function eksekusiSetujuiPengajuan(idKeringanan, nisn, jumlahAbsen) {
+        if (!idKeringanan || !nisn) return notifGagal("Data pengajuan tidak lengkap (ID atau NISN kosong).");
+        konfirmAksi(`Apakah Anda yakin menyetujui berkas ini? Absen siswa dengan NISN ${nisn} akan otomatis ditambahkan sebanyak ${jumlahAbsen} sesi.`, async () => {
+            try {
+                const res = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({
+                        action: 'setujuiPengajuanAbsen',
+                        id_keringanan: idKeringanan,
+                        nisn_siswa: nisn,
+                        jumlah_absen: parseInt(jumlahAbsen) || 0
+                    })
+                });
 
-        try {
-            const res = await fetch(WEB_APP_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({
-                    action: 'setujuiPengajuanAbsen',
-                    id_keringanan: idKeringanan,
-                    nisn_siswa: nisn,
-                    jumlah_absen: parseInt(jumlahAbsen) || 0
-                })
-            });
+                const textResponse = await res.text();
+                let result = {};
+                try { result = JSON.parse(textResponse); } catch(e) {
+                    if (textResponse.includes("berhasil")) result = { status: "success", message: textResponse };
+                    else result = { status: "failed", message: textResponse };
+                }
 
-            const textResponse = await res.text();
-            let result = {};
-            try { result = JSON.parse(textResponse); } catch(e) {
-                if (textResponse.includes("berhasil")) result = { status: "success", message: textResponse };
-                else result = { status: "failed", message: textResponse };
+                if (result.status === 'success' || result.message.includes("berhasil")) {
+                    notifSukses("Pengajuan disetujui dan kuota absen siswa berhasil ditambahkan!");
+                    muatDataKeringanan(); // Auto-refresh isi tabel pengajuan biar statusnya berubah
+                } else {
+                    notifGagal("Gagal: " + result.message);
+                }
+            } catch (err) {
+                notifGagal("Terjadi gangguan sinkronisasi data ke cloud server.");
             }
-
-            if (result.status === 'success' || result.message.includes("berhasil")) {
-                alert("✨ Sukses: Pengajuan disetujui dan kuota absen siswa berhasil ditambahkan!");
-                muatDataKeringanan(); // Auto-refresh isi tabel pengajuan biar statusnya berubah
-            } else {
-                alert("⚠️ Gagal: " + result.message);
-            }
-        } catch (err) {
-            alert("❌ Terjadi gangguan sinkronisasi data ke cloud server.");
-        }
+        }, { danger: false, labelYa: 'Ya, Setujui' });
     }
     
     function formatJam(isoString) {
@@ -1439,28 +1438,29 @@
     }
 
     // 8. OTORITAS VALIDASI STATUS BERKAS (TERIMA / TOLAK)
-    async function prosesAksiKeringanan(idKeringanan, statusBaru) {
-        if (!confirm(`Apakah Anda yakin ingin mengubah berkas ${idKeringanan} menjadi "${statusBaru}"?`)) return;
-        try {
-            const response = await fetch(WEB_APP_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({
-                    action: 'ubahStatusKeringanan',
-                    id_keringanan: idKeringanan,
-                    status_baru: statusBaru
-                })
-            });
-            const result = await response.json();
-            if (result.status === 'success') {
-                alert(result.message);
-                muatDataKeringanan(); 
-            } else {
-                alert("Gagal memproses berkas: " + result.message);
+    function prosesAksiKeringanan(idKeringanan, statusBaru) {
+        konfirmAksi(`Apakah Anda yakin ingin mengubah berkas ${idKeringanan} menjadi "${statusBaru}"?`, async () => {
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({
+                        action: 'ubahStatusKeringanan',
+                        id_keringanan: idKeringanan,
+                        status_baru: statusBaru
+                    })
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    notifSukses(result.message);
+                    muatDataKeringanan(); 
+                } else {
+                    notifGagal("Gagal memproses berkas: " + result.message);
+                }
+            } catch (err) { 
+                notifGagal("Gangguan transmisi data ke cloud database."); 
             }
-        } catch (err) { 
-            alert("Gangguan transmisi data ke cloud database."); 
-        }
+        }, { danger: statusBaru !== 'DISETUJUI', labelYa: statusBaru === 'DISETUJUI' ? 'Ya, Setujui' : 'Ya, Lanjutkan' });
     }
 
     // 9. LOGOUT SISTEM
@@ -1566,7 +1566,7 @@ function formatWaktuLengkapJurnal(tanggalMentah, keteranganMentah) {
         const materi = document.getElementById('editMateriAdmin').value;
         const catatan = document.getElementById('editCatatanAdmin').value;
 
-        if(!materi.trim()) return alert("Kolom bahasan pokok materi wajib diisi!");
+        if(!materi.trim()) return notifGagal("Kolom bahasan pokok materi wajib diisi!");
 
         try {
             const res = await fetch(WEB_APP_URL, {
@@ -1582,55 +1582,55 @@ function formatWaktuLengkapJurnal(tanggalMentah, keteranganMentah) {
             const result = await res.json();
             
             if(result.status === 'success' || result.message.includes("berhasil")) {
-                alert("✨ Sukses: " + (result.message || "Jurnal mengajar berhasil diperbarui!"));
+                notifSukses(result.message || "Jurnal mengajar berhasil diperbarui!");
                 tutupModalEditAdmin();
                 muatJurnalGuru(); // Otomatis refresh tampilan tabel di layar
             } else {
-                alert("⚠️ Gagal: " + result.message);
+                notifGagal("Gagal: " + result.message);
             }
         } catch(e) {
-            alert("❌ Terjadi gangguan sinkronisasi koreksi data ke cloud database.");
+            notifGagal("Terjadi gangguan sinkronisasi koreksi data ke cloud database.");
         }
     }
 
-    async function eksekusiHapusAdmin(idAgenda) {
-        if(!idAgenda) return alert("⚠️ Gagal mengeksekusi: ID Agenda tidak valid atau kosong.");
-        if(!confirm("Apakah Anda yakin ingin menghapus catatan agenda KBM ini secara permanen dari server?")) return;
-        
-        try {
-            const res = await fetch(WEB_APP_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ action: 'hapusAgendaAdmin', id_agenda: idAgenda })
-            });
-            
-            // Ambil text mentah dulu untuk jaga-jaga kalau server mengembalikan string biasa
-            const textResponse = await res.text();
-            let result = {};
-            
+    function eksekusiHapusAdmin(idAgenda) {
+        if(!idAgenda) return notifGagal("Gagal mengeksekusi: ID Agenda tidak valid atau kosong.");
+        konfirmAksi("Apakah Anda yakin ingin menghapus catatan agenda KBM ini secara permanen dari server?", async () => {
             try {
-                result = JSON.parse(textResponse);
-            } catch(jsonErr) {
-                // Jika responnya teks biasa tapi ada kata "berhasil", kita anggap sukses!
-                if (textResponse.includes("berhasil")) {
-                    result = { status: "success", message: textResponse };
-                } else {
-                    result = { status: "failed", message: textResponse };
+                const res = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ action: 'hapusAgendaAdmin', id_agenda: idAgenda })
+                });
+                
+                // Ambil text mentah dulu untuk jaga-jaga kalau server mengembalikan string biasa
+                const textResponse = await res.text();
+                let result = {};
+                
+                try {
+                    result = JSON.parse(textResponse);
+                } catch(jsonErr) {
+                    // Jika responnya teks biasa tapi ada kata "berhasil", kita anggap sukses!
+                    if (textResponse.includes("berhasil")) {
+                        result = { status: "success", message: textResponse };
+                    } else {
+                        result = { status: "failed", message: textResponse };
+                    }
                 }
+                
+                if(result.status === 'success' || result.message.includes("berhasil")) {
+                    notifSukses(result.message || "Data agenda mengajar berhasil dihapus permanen!");
+                    muatJurnalGuru(); // Otomatis refresh tampilan tabel di layar tanpa muat ulang web!
+                } else {
+                    notifGagal("Sementara dihapus oleh sistem: " + result.message + " Silakan klik tombol Refresh.");
+                }
+            } catch(e) {
+                // Jika masuk ke catch karena CORS atau format data, tapi kita tahu di backend sebenarnya terproses
+                console.log("Detail log error tersembunyi:", e);
+                notifSukses("Sinkronisasi berhasil: Data agenda telah dihapus dari cloud server.");
+                muatJurnalGuru(); // Tetap lakukan refresh otomatis demi kenyamanan
             }
-            
-            if(result.status === 'success' || result.message.includes("berhasil")) {
-                alert("🗑️ Sukses: " + (result.message || "Data agenda mengajar berhasil dihapus permanen!"));
-                muatJurnalGuru(); // Otomatis refresh tampilan tabel di layar tanpa muat ulang web!
-            } else {
-                alert("⚠️ Sementara di hapus oleh sistem : " + result.message + "Tolong di klik tombol Reflesh yaa!!!");
-            }
-        } catch(e) {
-            // Jika masuk ke catch karena CORS atau format data, tapi kita tahu di backend sebenarnya terproses
-            console.log("Detail log error tersembunyi:", e);
-            alert("✨ Sinkronisasi Berhasil: Data agenda telah dihapus dari cloud server.");
-            muatJurnalGuru(); // Tetap lakukan refresh otomatis demi kenyamanan
-        }
+        });
     }
     // 📷 FITUR BARU: FUNGSI MEMBUKA PREVIEW MODAL FOTO UKURAN BESAR
     function bukaPreviewFoto(urlFoto) {
@@ -1974,5 +1974,91 @@ function formatWaktuLengkapJurnal(tanggalMentah, keteranganMentah) {
         to { opacity: 1; transform: scale(1) translateY(0); }
     }
     </style>
+
+<!-- ===== TOAST NOTIFIKASI (checklist hijau / silang merah, seragam dgn dashboard lain) ===== -->
+<div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2.5 items-center w-full max-w-sm px-4 pointer-events-none"></div>
+<style>
+@keyframes toastIn { from { opacity: 0; transform: translateY(-14px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes toastOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(-10px) scale(0.96); } }
+</style>
+<script>
+function notifTampil(tipe, pesan, callback) {
+    const container = document.getElementById('toastContainer');
+    if (!container) { if (typeof callback === 'function') callback(); return; }
+    const preset = {
+        sukses: { border: 'border-emerald-100', bg: 'bg-emerald-50', text: 'text-emerald-500', icon: 'fa-check' },
+        gagal:  { border: 'border-rose-100',    bg: 'bg-rose-50',    text: 'text-rose-500',    icon: 'fa-xmark' },
+        info:   { border: 'border-teal-100',    bg: 'bg-teal-50',    text: 'text-teal-500',    icon: 'fa-circle-info' }
+    }[tipe] || { border: 'border-teal-100', bg: 'bg-teal-50', text: 'text-teal-500', icon: 'fa-circle-info' };
+    const toast = document.createElement('div');
+    toast.className = `pointer-events-auto w-full bg-white border ${preset.border} shadow-xl rounded-2xl px-4 py-3.5 flex items-start gap-3`;
+    toast.style.animation = 'toastIn 0.25s ease-out';
+    toast.innerHTML = `
+        <div class="w-8 h-8 rounded-full ${preset.bg} flex items-center justify-center shrink-0 mt-0.5">
+            <i class="fa-solid ${preset.icon} ${preset.text} text-sm"></i>
+        </div>
+        <p class="text-xs font-semibold text-slate-700 leading-relaxed pt-1.5 whitespace-pre-line">${pesan}</p>
+    `;
+    container.appendChild(toast);
+    const durasi = tipe === 'gagal' ? 3400 : 2200;
+    setTimeout(() => {
+        toast.style.animation = 'toastOut 0.22s ease-in forwards';
+        setTimeout(() => {
+            toast.remove();
+            if (typeof callback === 'function') callback();
+        }, 220);
+    }, durasi);
+}
+function notifSukses(pesan, callback) { notifTampil('sukses', pesan, callback); }
+function notifGagal(pesan, callback) { notifTampil('gagal', pesan, callback); }
+function notifInfo(pesan, callback) { notifTampil('info', pesan, callback); }
+</script>
+
+<!-- ===== MODAL KONFIRMASI AKSI GENERIK (pengganti confirm() bawaan browser) ===== -->
+<div id="modalKonfirmasiAksi" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-[999] p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-7 text-center animate-[fadeInScale_0.2s_ease-out]">
+        <div id="iconKonfirmasiAksi" class="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center mx-auto mb-5">
+            <i class="fa-solid fa-circle-question text-amber-500 text-xl"></i>
+        </div>
+        <h3 class="text-base font-black text-slate-800 mb-1.5">Konfirmasi</h3>
+        <p id="teksKonfirmasiAksi" class="text-xs text-slate-500 leading-relaxed mb-6 whitespace-pre-line">Apakah Anda yakin?</p>
+        <div class="flex items-center gap-3">
+            <button onclick="tutupKonfirmasiAksi()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-all text-xs cursor-pointer">Batal</button>
+            <button id="btnYaKonfirmasiAksi" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl transition-all text-xs cursor-pointer shadow-md shadow-rose-500/20">Ya, Lanjutkan</button>
+        </div>
+    </div>
+</div>
+<style>
+@keyframes fadeInScale { from { opacity: 0; transform: scale(0.94) translateY(6px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+</style>
+<script>
+function konfirmAksi(pesan, callbackYa, opsi = {}) {
+    const modal = document.getElementById('modalKonfirmasiAksi');
+    const teks = document.getElementById('teksKonfirmasiAksi');
+    const iconWrap = document.getElementById('iconKonfirmasiAksi');
+    const btnYa = document.getElementById('btnYaKonfirmasiAksi');
+    if (!modal || !teks || !iconWrap || !btnYa) { if (confirm(pesan)) callbackYa(); return; }
+
+    teks.textContent = pesan;
+    const danger = opsi.danger !== false; // default: gaya tegas/merah (cocok utk hapus)
+    iconWrap.className = danger
+        ? 'w-14 h-14 rounded-2xl bg-rose-50 flex items-center justify-center mx-auto mb-5'
+        : 'w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center mx-auto mb-5';
+    iconWrap.innerHTML = danger
+        ? '<i class="fa-solid fa-trash-can text-rose-500 text-xl"></i>'
+        : '<i class="fa-solid fa-circle-question text-amber-500 text-xl"></i>';
+    btnYa.className = danger
+        ? 'flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl transition-all text-xs cursor-pointer shadow-md shadow-rose-500/20'
+        : 'flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl transition-all text-xs cursor-pointer shadow-md shadow-teal-500/20';
+    btnYa.textContent = opsi.labelYa || 'Ya, Lanjutkan';
+    btnYa.onclick = () => { modal.classList.add('hidden'); callbackYa(); };
+
+    modal.classList.remove('hidden');
+}
+function tutupKonfirmasiAksi() {
+    const modal = document.getElementById('modalKonfirmasiAksi');
+    if (modal) modal.classList.add('hidden');
+}
+</script>
 </body>
 </html>

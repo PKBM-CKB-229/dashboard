@@ -315,8 +315,7 @@
         userLogin = JSON.parse(sessionData);
         
         if (userLogin.role !== "siswa") {
-            alert("Akses ditolak! Halaman ini khusus untuk Siswa.");
-            window.location.href = "index.html#login"; return;
+            notifGagal("Akses ditolak! Halaman ini khusus untuk Siswa.", () => window.location.href = "index.html#login"); return;
         }
         
         // Sinkronisasi Data Profil di UI
@@ -340,10 +339,10 @@
                 const passUlang = document.getElementById('editPasswordUlang').value;
                 const btnSimpan = document.getElementById('btnSimpanProfil');
 
-                if (!namaBaru) { alert("Nama lengkap tidak boleh kosong."); return; }
+                if (!namaBaru) { notifGagal("Nama lengkap tidak boleh kosong."); return; }
                 if (passBaru || passUlang) {
-                    if (passBaru !== passUlang) { alert("Konfirmasi password baru tidak cocok."); return; }
-                    if (passBaru.length < 4) { alert("Password baru minimal 4 karakter."); return; }
+                    if (passBaru !== passUlang) { notifGagal("Konfirmasi password baru tidak cocok."); return; }
+                    if (passBaru.length < 4) { notifGagal("Password baru minimal 4 karakter."); return; }
                 }
 
                 const teksAsli = btnSimpan.innerHTML;
@@ -369,13 +368,13 @@
                         document.getElementById('namaProfilKiri').innerText = userLogin.nama_lengkap;
                         document.getElementById('editPasswordBaru').value = "";
                         document.getElementById('editPasswordUlang').value = "";
-                        alert("✅ Profil berhasil disimpan!");
+                        notifSukses("Profil berhasil disimpan!");
                     } else {
-                        alert("Gagal menyimpan: " + (hasil.message || "Terjadi kesalahan"));
+                        notifGagal("Gagal menyimpan: " + (hasil.message || "Terjadi kesalahan"));
                     }
                 } catch (err) {
                     console.error(err);
-                    alert("Terjadi kesalahan koneksi saat menyimpan profil.");
+                    notifGagal("Terjadi kesalahan koneksi saat menyimpan profil.");
                 } finally {
                     btnSimpan.disabled = false;
                     btnSimpan.innerHTML = teksAsli;
@@ -488,13 +487,13 @@
                 const alasanInput = document.getElementById('alasanSiswa');
                 
                 if (!fileInput || fileInput.files.length === 0) {
-                    alert("Silakan pilih file gambar bukti terlebih dahulu!");
+                    notifGagal("Silakan pilih file gambar bukti terlebih dahulu!");
                     return;
                 }
 
                 const file = fileInput.files[0];
                 if (file.size > 2.5 * 1024 * 1024) {
-                    alert("Ukuran file terlalu besar! Demi kelancaran unggah lewat HP, maksimal batas berkas adalah 2.5MB.");
+                    notifGagal("Ukuran file terlalu besar! Demi kelancaran unggah lewat HP, maksimal batas berkas adalah 2.5MB.");
                     return;
                 }
 
@@ -543,7 +542,7 @@
                         }
                         
                         if (result.status === "success" || (result.message && result.message.includes("Sukses"))) {
-                            alert("✨ Pengajuan Sukses Dikirim!\n" + (result.message || "Berkas keringanan Anda berhasil didaftarkan ke sistem."));
+                            notifSukses("Pengajuan Sukses Dikirim!\n" + (result.message || "Berkas keringanan Anda berhasil didaftarkan ke sistem."));
                             formKeringanan.reset();
                             if(document.getElementById('namaFileTerpilih')) {
                                 document.getElementById('namaFileTerpilih').innerText = "Pilih Gambar Bukti atau Foto Kamera";
@@ -552,11 +551,11 @@
                             const tombolBeranda = document.querySelector('.menu-btn');
                             if (tombolBeranda) gantiMenu('Beranda', tombolBeranda);
                         } else {
-                            alert("⚠️ Gagal memproses: " + result.message);
+                            notifGagal("Gagal memproses: " + result.message);
                         }
                     } catch (error) {
                         console.error(error);
-                        alert("⚠️ Terjadi gangguan koneksi internet atau server cloud sedang sibuk. Silakan coba beberapa saat lagi.");
+                        notifGagal("Terjadi gangguan koneksi internet atau server cloud sedang sibuk. Silakan coba beberapa saat lagi.");
                     } finally {
                         btn.disabled = false;
                         btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Berkas Pengajuan`;
@@ -565,7 +564,7 @@
 
                 // 2. DAFTARKAN ONERROR
                 reader.onerror = function() {
-                    alert("Gagal membaca file gambar pada perangkat Anda.");
+                    notifGagal("Gagal membaca file gambar pada perangkat Anda.");
                     btn.disabled = false;
                     btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Berkas Pengajuan`;
                 };
@@ -748,12 +747,10 @@
         
         const currentUser = JSON.parse(sessionStorage.getItem('userLogin'));
         if (!currentUser) {
-            alert("Sesi login kedaluwarsa. Silakan login kembali.");
-            window.location.href = "index.html#login";
-            return;
+            notifGagal("Sesi login kedaluwarsa. Silakan login kembali.", () => window.location.href = "index.html#login"); return;
         }
 
-        alert("QR Terbaca: " + decodedText + "\nSedang memproses absensi...");
+        notifInfo("QR Terbaca: " + decodedText + "\nSedang memproses absensi...");
 
         try {
             const response = await fetch(WEB_APP_URL, {
@@ -769,17 +766,17 @@
             const result = await response.json();
             
             if (result.status === 'success') {
-                alert("✨ " + result.message);
+                notifSukses(result.message);
                 // Alihkan secara smooth ke panel Riwayat Presensi tanpa reload browser kaku
                 const btnRiwayat = document.querySelector("button[onclick*='Riwayat']");
                 gantiMenu('Riwayat', btnRiwayat);
             } else {
-                alert("⚠️ Gagal Absen: " + result.message);
+                notifGagal("Gagal Absen: " + result.message);
                 const btnBeranda = document.querySelector("button[onclick*='Beranda']");
                 gantiMenu('Beranda', btnBeranda);
             }
         } catch (err) {
-            alert("Terjadi gangguan transmisi data ke database cloud.");
+            notifGagal("Terjadi gangguan transmisi data ke database cloud.");
             console.error(err);
         }
     }
@@ -866,6 +863,43 @@
     from { opacity: 0; transform: scale(0.94) translateY(6px); }
     to { opacity: 1; transform: scale(1) translateY(0); }
 }
+@keyframes toastIn { from { opacity:0; transform: translateY(-14px) scale(0.96); } to { opacity:1; transform: translateY(0) scale(1); } }
+@keyframes toastOut { from { opacity:1; transform: translateY(0) scale(1); } to { opacity:0; transform: translateY(-10px) scale(0.96); } }
 </style>
+
+<!-- ===== SISTEM NOTIFIKASI TOAST (pengganti alert bawaan browser) ===== -->
+<div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2.5 items-center w-full max-w-sm px-4 pointer-events-none"></div>
+<script>
+function notifTampil(tipe, pesan, callback) {
+    const container = document.getElementById('toastContainer');
+    if (!container) { if (typeof callback === 'function') callback(); return; }
+    const preset = {
+        sukses: { border: 'border-emerald-100', bg: 'bg-emerald-50', text: 'text-emerald-500', icon: 'fa-check' },
+        gagal:  { border: 'border-rose-100',    bg: 'bg-rose-50',    text: 'text-rose-500',    icon: 'fa-xmark' },
+        info:   { border: 'border-teal-100',    bg: 'bg-teal-50',    text: 'text-teal-500',    icon: 'fa-circle-info' }
+    }[tipe] || { border: 'border-teal-100', bg: 'bg-teal-50', text: 'text-teal-500', icon: 'fa-circle-info' };
+    const toast = document.createElement('div');
+    toast.className = `pointer-events-auto w-full bg-white border ${preset.border} shadow-xl rounded-2xl px-4 py-3.5 flex items-start gap-3`;
+    toast.style.animation = 'toastIn 0.25s ease-out';
+    toast.innerHTML = `
+        <div class="w-8 h-8 rounded-full ${preset.bg} flex items-center justify-center shrink-0 mt-0.5">
+            <i class="fa-solid ${preset.icon} ${preset.text} text-sm"></i>
+        </div>
+        <p class="text-xs font-semibold text-slate-700 leading-relaxed pt-1.5 whitespace-pre-line">${pesan}</p>
+    `;
+    container.appendChild(toast);
+    const durasi = tipe === 'gagal' ? 3400 : 2200;
+    setTimeout(() => {
+        toast.style.animation = 'toastOut 0.22s ease-in forwards';
+        setTimeout(() => {
+            toast.remove();
+            if (typeof callback === 'function') callback();
+        }, 220);
+    }, durasi);
+}
+function notifSukses(pesan, callback) { notifTampil('sukses', pesan, callback); }
+function notifGagal(pesan, callback) { notifTampil('gagal', pesan, callback); }
+function notifInfo(pesan, callback) { notifTampil('info', pesan, callback); }
+</script>
 </body>
 </html>
