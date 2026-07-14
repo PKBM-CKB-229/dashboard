@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -1618,7 +1618,7 @@
                             <td class="px-6 py-4">
                                 <p class="font-semibold text-slate-700">${item.mata_pelajaran && item.mata_pelajaran !== '-' ? item.mata_pelajaran : 'Agenda tidak ditemukan'}</p>
                                 <p class="text-[10.5px] text-slate-400 font-medium mt-0.5 truncate max-w-[180px]">${item.materi_agenda || '-'}</p>
-                                <p class="text-[10px] text-slate-400 font-medium mt-0.5"><i class="fa-solid fa-chalkboard-user text-[9px] mr-1"></i>${item.nama_guru || '-'} &middot; ${item.tanggal_agenda || '-'}</p>
+                                <p class="text-[10px] text-slate-400 font-medium mt-0.5"><i class="fa-solid fa-chalkboard-user text-[9px] mr-1"></i>${item.nama_guru || '-'} &middot; ${formatTanggalAgendaSingkat(item.tanggal_agenda)}</p>
                             </td>
                             <td class="px-6 py-4 text-center">${buktiHTML}</td>
                             <td class="px-6 py-4 text-center">
@@ -1701,6 +1701,18 @@
         }
     }
     
+    function formatTanggalAgendaSingkat(nilaiTanggal) {
+        if (!nilaiTanggal || nilaiTanggal === '-') return '-';
+        try {
+            const d = new Date(nilaiTanggal);
+            if (isNaN(d.getTime())) return nilaiTanggal;
+            const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+            return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
+        } catch (e) {
+            return nilaiTanggal;
+        }
+    }
+
     function formatTanggalWaktu(stringTanggal, stringJam) {
         if (!stringJam || stringJam === "-") return "-";
         try {
